@@ -1,5 +1,5 @@
 # 3D Tetris
-A 3 dimensional Tetris-like game that is made using the MonoGame library in C#, meant to run on Devcade (a arcade-like cabinet made by CSHers) 
+A 3 dimensional Tetris-like game that is made using the MonoGame library in C#, meant to run on Devcade (https://devcade.csh.rit.edu/) 
 
 ### Building with build scripts
 
