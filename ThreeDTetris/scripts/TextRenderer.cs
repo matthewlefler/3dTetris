@@ -197,11 +197,11 @@ namespace TextRenderer
                 float characterHeight = glyphs[chars[i]].BoundsInTexture.Height;
 
                 this.effect.World =
-                    Matrix.CreateTranslation(new Vector3(-characterWidth/2f, -characterHeight / 2f, 0))
+                    Matrix.CreateTranslation(new Vector3(-characterWidth/2f, textheight/2f, 0))
                     * Matrix.CreateScale(scale)
-                    * Matrix.CreateTranslation(new Vector3((x * textwidth * scale) - (xOffset * scale) + position.X, y * textheight * scale + position.Y, 0))
-                    * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, characterHeight / 2f * scale, 0))
                     * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+                    * Matrix.CreateTranslation(new Vector3((x * textwidth * scale) - (xOffset * scale) + position.X, y * textheight * scale + position.Y, 0))
+                    * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, -textheight/2f * scale, 0))
                     * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
                     * Matrix.CreateTranslation(camera.position - distanceFromCamera * Vector3.Normalize(camera.position));
 

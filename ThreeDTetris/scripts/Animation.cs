@@ -148,14 +148,14 @@ namespace SimpleAnimation
                 t = 1;
             }
 
-            float c1 = 0.35f;
+            float c1 = 0.24f;
             float c2 = c1 * 1.525f;
 
             if(t < 0.5f)
             {
-                return (endValue - startValue) * (MathF.Pow(2 * t, 2) * ((c2 + 1f) * t - c2)) + startValue;
+                return ((endValue - startValue) * (MathF.Pow(2 * t, 2) * ((c2 + 1f) * t - c2)) ) + startValue;
             }
-            return (endValue - startValue) * ((MathF.Pow(2 * t - 2f, 2) * (c2 + 1f) * (2 * t - 2f) - c2 + 2) / 2) + startValue;
+            return ( (endValue - startValue) * ((MathF.Pow(2 * t - 2f, 2) * ((c2 + 1f) * (2 * t - 2f) + c2) + 2) / 2) ) + startValue;
         }
     }
 }

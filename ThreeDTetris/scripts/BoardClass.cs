@@ -35,7 +35,7 @@ namespace BoardClass
         public bool zoomInAnimation = true;
         public bool startAnimation = false;
         public float startTimer = 0f;
-        public float startTimerSpeed = 2f;
+        public float startTimerSpeed = 1f;
         public float startText = 3;
         public float startTextScale = 10;
         public Vector3 startTextColor = Vector3.One;

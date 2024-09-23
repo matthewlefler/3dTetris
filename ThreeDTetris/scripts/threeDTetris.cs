@@ -21,7 +21,6 @@ using PieceClass;
 using BoardClass;
 using SimpleAnimation;
 using TextRenderer;
-using System.Reflection.Metadata.Ecma335;
 
 // MAKE SURE YOU RENAME ALL PROJECT FILES FROM DevcadeGame TO YOUR YOUR GAME NAME
 namespace ThreeDTetris
@@ -38,7 +37,6 @@ namespace ThreeDTetris
         //Menus
         private MainMenu _mainMenu;
         private Menu selectedMenu;
-
 
         private static gameStates gameState = new gameStates();
 
@@ -485,13 +483,12 @@ namespace ThreeDTetris
                             else
                             {
                                 player1Camera.absoluteMove(2 * MathF.PI, 0f);
-                                player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame / 100);
+                                player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame/2f);
                             }
                         }
                     }
                     if (board1.startAnimation == true)
                     {
-
                         board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
                         if (board1.startTimer > 1)
                         {
@@ -871,11 +868,20 @@ namespace ThreeDTetris
                 case gameStates.Menu:
                     selectedMenu.draw(_fontInterpreter, player1Camera.position - Vector3.Normalize(player1Camera.position) * 400);
                     break;
+
+
+
                 case gameStates.Pause:
                     break;
+
+
+
                 case gameStates.Lost:
                     _fontInterpreter.drawStringRelativeToCamera("continue?", Vector2.Zero, 660, 1000, 1.4f, Vector3.Zero, Vector3.One);
                     break;
+
+
+
                 case gameStates.SoloStandard:
                     if(board1.zoomInAnimation == true)
                     {
@@ -884,11 +890,14 @@ namespace ThreeDTetris
                     if (board1.startAnimation)
                     {
                         _fontInterpreter.drawStringRelativeToCamera("start in", new Vector2(0, 200), 660, 100, 3, Vector3.Zero, Vector3.One);
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, board1.startTextScale / 100, Vector3.Zero, board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/10f, new Vector3(2 * MathF.PI - board1.startTextScale/8f,0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
                     _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
                     break;
+
+
+
                 case gameStates.SoloThreeD:
                     if (board1.zoomInAnimation == true)
                     {
