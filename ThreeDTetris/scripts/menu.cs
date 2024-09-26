@@ -55,17 +55,27 @@ namespace MenuClass
         //draws the text in MainMenuItems verticaly
         public void draw(FontInterpreter fontInterpreter, Vector3 position)
         {
+            string selectedCharacters = ">";
+            int highestItemLength = 0;
+            foreach (string item in MenuItems)
+            {
+                if(item.Length + selectedCharacters.Length > highestItemLength)
+                {
+                    highestItemLength = item.Length + selectedCharacters.Length;
+                }
+            }
+
             for (int i = 0; i < MenuItems.Count; i++)
             {
                 int yPosition = i * -24 + 30;
 
                 if (i == selectedOption)
                 {
-                    fontInterpreter.drawStringInWorld(">" + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 236, 100, 1f, Vector3.Zero, Vector3.One);
+                    fontInterpreter.menuDrawStringInWorld(selectedCharacters + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, 1f, Vector3.Zero, Vector3.One, highestItemLength);
                 }
                 else
                 {
-                    fontInterpreter.drawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 240, 100, 1f, Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f));
+                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, 1f, Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f), highestItemLength);
                 }
             }
         }

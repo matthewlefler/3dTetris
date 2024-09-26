@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using CameraClass;
+using System.Security.Principal;
 
 namespace TextRenderer
 {
@@ -75,13 +76,15 @@ namespace TextRenderer
         private OrbitCamera camera;
 
         GraphicsDevice _graphicsDevice;
+        Rectangle windowSize;
 
-        public FontInterpreter(SpriteFont font, GraphicsDevice _graphicsDevice, BasicEffect effect, OrbitCamera camera)
+        public FontInterpreter(SpriteFont font, GraphicsDevice _graphicsDevice, Rectangle window, BasicEffect effect, OrbitCamera camera)
         {
             this._graphicsDevice = _graphicsDevice;
+            this.windowSize = window;
             this.effect = effect;
-            this.font = font;
             this.camera = camera;
+            this.font = font;
             this.fontTexture = font.Texture;
 
             this.glyphs = font.GetGlyphs();
@@ -203,14 +206,14 @@ namespace TextRenderer
                     * Matrix.CreateTranslation(new Vector3((x * textwidth * scale) - (xOffset * scale) + position.X, y * textheight * scale + position.Y, 0))
                     * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, -textheight/2f * scale, 0))
                     * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
-                    * Matrix.CreateTranslation(camera.position - distanceFromCamera * Vector3.Normalize(camera.position));
+                    * Matrix.CreateTranslation(camera.position - (scale * text.Length * 80f * Vector3.Normalize(camera.position)));
 
                 letters[chars[i]].draw(_graphicsDevice, this.effect);
 
                 x++;
             }
         }
-        public void drawStringInWorld(string text, Vector3 position, float distanceFromCamera, int charactersPerLine, float scale, Vector3 rotation, Vector3 color)
+        public void drawStringInWorld(string text, Vector3 position, int charactersPerLine, float scale, Vector3 rotation, Vector3 color)
         {
             char[] chars = text.ToCharArray();
             int x = 0, y = 0;
@@ -265,6 +268,68 @@ namespace TextRenderer
                     * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
                     * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
                     * Matrix.CreateTranslation(position);
+
+                letters[chars[i]].draw(_graphicsDevice, this.effect);
+
+                x++;
+            }
+        }
+
+        public void menuDrawStringInWorld(string text, Vector3 position, int charactersPerLine, float scale, Vector3 rotation, Vector3 color, int longestText)
+        {
+            char[] chars = text.ToCharArray();
+            int x = 0, y = 0;
+
+            float xOffset = 0f;
+
+            int textWidthSpacing = 26;
+            int textHeightSpacing = 24;
+
+            if (chars.Length == 1)
+            {
+                foreach (char c in chars)
+                {
+                    xOffset += glyphs[c].BoundsInTexture.Width;
+                }
+                xOffset /= 2;
+            }
+            else
+            {
+                if (chars.Length <= charactersPerLine)
+                {
+                    xOffset = chars.Length * textWidthSpacing / 2f;
+                }
+            }
+            if (chars.Length > charactersPerLine)
+            {
+                xOffset = charactersPerLine * textWidthSpacing / 2f;
+            }
+
+
+            this.effect.EmissiveColor = color;
+
+            this.effect.Projection = camera.projectionMatrix;
+            this.effect.View = camera.viewMatrix;
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                if (x >= charactersPerLine)
+                {
+                    x = 0;
+                    y -= 1;
+                }
+
+                float characterWidth = glyphs[chars[i]].BoundsInTexture.Width;
+                float characterHeight = glyphs[chars[i]].BoundsInTexture.Height;
+
+                this.effect.World = 
+                    Matrix.CreateTranslation(new Vector3(-characterWidth / 2f, -characterHeight / 2f, 0))
+                    * Matrix.CreateScale(scale)
+                    * Matrix.CreateTranslation(new Vector3((x * textWidthSpacing * scale) - (xOffset * scale), y * textHeightSpacing * scale, 0))
+                    * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, characterHeight / 2f * scale, 0))
+                    * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+                    * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
+                    * Matrix.CreateTranslation(scale * position - (scale * longestText * 80f * Vector3.Normalize(camera.position)));
 
                 letters[chars[i]].draw(_graphicsDevice, this.effect);
 

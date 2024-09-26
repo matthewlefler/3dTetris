@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SimpleAnimation;
+using System.Diagnostics;
 
 namespace CameraClass
 {
@@ -27,21 +28,22 @@ namespace CameraClass
         public readonly float _finalDistanceFromMiddle = 100f;
         private float _distanceFromMiddle = 35f;
         public float cameraHeight { get; private set; }
-        public float distanceFromMiddle { set { move(_orbitRotations.X, _orbitRotations.Y); _distanceFromMiddle = value; } get { return _distanceFromMiddle; } }
+        public float distanceFromMiddle { set { absoluteMove(_orbitRotations.X, _orbitRotations.Y); _distanceFromMiddle = value; } get { return _distanceFromMiddle; } }
         public AnimationFloat distanceAnimation;
 
         public Matrix viewMatrix { get { return Matrix.CreateLookAt(position, new Vector3(0, 0, 0), Vector3.UnitY); } private set { } }
         public Matrix projectionMatrix;
 
-        public OrbitCamera(Vector2 orbitRotations, GraphicsDevice graphicsDevice, float cameraHeight)
+        public OrbitCamera(Vector2 orbitRotations, GraphicsDeviceManager graphics, float cameraHeight)
         {
             this.cameraHeight = cameraHeight;
             move(orbitRotations.X, orbitRotations.Y);
             viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), Vector3.UnitY);
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathF.PI / 4, graphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
+
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathF.PI / 4f, (float)graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight, 0.01f, 1000f);
             //projectionMatrix = Matrix.CreateOrthographic(30 * graphicsDevice.Viewport.AspectRatio, 30, 0.01f, 100f);
 
-            _finalDistanceFromMiddle = 40f;
+            _finalDistanceFromMiddle = 40000 * (1f/(float)graphics.PreferredBackBufferWidth) + 14f;
         }
 
         public void move(float x, float y)

@@ -21,7 +21,7 @@ namespace BoardClass
         public int score { get; private set; } = 0;
         private Dictionary<int, int> linesToScores = new Dictionary<int, int>()
         {
-            {0, 0},
+            { 0, 0 },
             { 1, 100 },
             { 2, 300 },
             { 3, 500 },
@@ -37,7 +37,7 @@ namespace BoardClass
         public float startTimer = 0f;
         public float startTimerSpeed = 1f;
         public float startText = 3;
-        public float startTextScale = 10;
+        public float startTextScale = 1;
         public Vector3 startTextColor = Vector3.One;
 
         VertexPositionColor[] lines;

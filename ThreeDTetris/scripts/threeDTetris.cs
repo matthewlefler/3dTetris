@@ -228,8 +228,8 @@ namespace ThreeDTetris
         /// </summary>
         void gameInit()
         {
-            player1Camera = new OrbitCamera(new Vector2(MathF.PI, 0), GraphicsDevice, 10f);
-            player2Camera = new OrbitCamera(new Vector2(MathF.PI, 0), GraphicsDevice, 10f);
+            player1Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
+            player2Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
 
             board1 = new BoardClass.Board(6, 20, 6, _graphics.GraphicsDevice, piecesPresets, player1Camera);
             board2 = new BoardClass.Board(6, 20, 6, _graphics.GraphicsDevice, piecesPresets, player2Camera);
@@ -249,14 +249,13 @@ namespace ThreeDTetris
             Input.Initialize();
             //Persistence.Init(); Uncomment if using the persistence section for save and load
 
-            //sets up the basic tetris componets
-            gameInit();
+            
 
             // Set window size if running debug (in release it will be fullscreen)
             #region
-#if false //DEBUG
-			_graphics.PreferredBackBufferWidth = 520;
-			_graphics.PreferredBackBufferHeight = 1080;
+#if DEBUG
+			_graphics.PreferredBackBufferWidth = 594; //594 on framework 16    devcade monitor is 9 wide by 21 tall or an aspect ration of 9/21
+			_graphics.PreferredBackBufferHeight = 1386; //1386 on framework 16 
 			_graphics.ApplyChanges();
 #else
             _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
@@ -267,7 +266,10 @@ namespace ThreeDTetris
 
             // TODO: Add your initialization logic here
 
-            windowSize = GraphicsDevice.Viewport.Bounds;
+            //sets up the basic tetris componets
+            gameInit();
+
+            windowSize = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             RasterizerState rs = new RasterizerState();
@@ -364,8 +366,9 @@ namespace ThreeDTetris
             settingsMenu.add("Board Size", boardSizeMenu, gameStates.Menu);
             settingsMenu.add("Back", _mainMenu, gameStates.Menu);
 
-            playMenu.add("Standard", _mainMenu, gameStates.SoloStandard);
-            playMenu.add("Solo 3D", _mainMenu, gameStates.SoloThreeD);
+            playMenu.add("Standard", playMenu, gameStates.SoloStandard);
+            playMenu.add("Solo 3D", playMenu, gameStates.SoloThreeD);
+            playMenu.add("Back", _mainMenu, gameStates.Menu);
 
             _mainMenu.add("Play", playMenu, gameStates.Menu);
             _mainMenu.add("Settings", settingsMenu, gameStates.Menu);
@@ -381,7 +384,7 @@ namespace ThreeDTetris
 
             fontEffect.EmissiveColor = new Vector3(1f, 1f, 1f);
             
-            _fontInterpreter = new FontInterpreter(_font, GraphicsDevice, fontEffect, player1Camera);
+            _fontInterpreter = new FontInterpreter(_font, GraphicsDevice, windowSize, fontEffect, player1Camera);
         }
 
         //keylist for only activating keys once per press;
@@ -447,11 +450,20 @@ namespace ThreeDTetris
                     player1Camera.distanceFromMiddle = 10000;
 
                     break;
+
+
+
                 case gameStates.Pause:
                     break;
+
+
+
                 case gameStates.Quit:
                     Exit();
                     break;
+
+
+
                 case gameStates.Lost:
                     if (runOnKeyDown(Keys.Enter))
                     {
@@ -459,6 +471,9 @@ namespace ThreeDTetris
                         selectedMenu = _mainMenu;
                     }
                     break;
+
+
+
                 case gameStates.SoloStandard:
                     if (board1.zoomInAnimation == true)
                     {
@@ -475,18 +490,17 @@ namespace ThreeDTetris
                             if (player1Camera.distanceAnimation.done == true)
                             {
                                 player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
-                                player1Camera.absoluteMove(2 * MathF.PI, 0f);
                                 player1Camera.distanceAnimation = null;
                                 board1.startAnimation = true;
                                 board1.zoomInAnimation = false;
                             }
                             else
                             {
-                                player1Camera.absoluteMove(2 * MathF.PI, 0f);
                                 player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame/2f);
                             }
                         }
                     }
+                    
                     if (board1.startAnimation == true)
                     {
                         board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
@@ -504,12 +518,13 @@ namespace ThreeDTetris
                             board1.startTimer -= 1;
                             board1.startText -= 1;
 
-                            board1.startTextScale = 10;
+                            board1.startTextScale = 1;
                             board1.startTextColor = Vector3.One;
                         }
-                        board1.startTextScale -= secondsAfterLastFrame * 9 * board1.startTimerSpeed;
+                        board1.startTextScale -= secondsAfterLastFrame * board1.startTimerSpeed;
                         board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
                     }
+
                     if (board1.enabled == true)
                     {
                         //key inputs to manipulate camera
@@ -662,14 +677,12 @@ namespace ThreeDTetris
                             if (player1Camera.distanceAnimation.done == true)
                             {
                                 player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
-                                player1Camera.absoluteMove(2 * MathF.PI, 0f);
                                 player1Camera.distanceAnimation = null;
                                 board1.startAnimation = true;
                                 board1.zoomInAnimation = false;
                             }
                             else
                             {
-                                player1Camera.absoluteMove(2 * MathF.PI, 0f);
                                 player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame);
                             }
                         }
@@ -866,18 +879,21 @@ namespace ThreeDTetris
             switch (gameState)
             {
                 case gameStates.Menu:
-                    selectedMenu.draw(_fontInterpreter, player1Camera.position - Vector3.Normalize(player1Camera.position) * 400);
+                    selectedMenu.draw(_fontInterpreter, player1Camera.position);
                     break;
 
 
 
                 case gameStates.Pause:
+                    board1.draw(basicEffect);
                     break;
 
 
 
                 case gameStates.Lost:
-                    _fontInterpreter.drawStringRelativeToCamera("continue?", Vector2.Zero, 660, 1000, 1.4f, Vector3.Zero, Vector3.One);
+                    board1.draw(basicEffect);
+                    string continueText = "continue?";
+                    _fontInterpreter.menuDrawStringInWorld("continue?", player1Camera.position, 1000, 1.4f, Vector3.Zero, Vector3.One, continueText.Length + 1);
                     break;
 
 
@@ -889,8 +905,8 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera("start in", new Vector2(0, 200), 660, 100, 3, Vector3.Zero, Vector3.One);
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/10f, new Vector3(2 * MathF.PI - board1.startTextScale/8f,0,0), board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera("start in:", new Vector2(0, 200), 660, 5, 1f, Vector3.Zero, Vector3.One);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(2 * MathF.PI - (2f * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
                     _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
@@ -913,13 +929,12 @@ namespace ThreeDTetris
                     break;
             }
 
-            //quick test of 3d model:
-            //DrawModel(cubeModel, world, viewMatrix, projectionMatrix);
+            //DrawModel(cubeModel, world, viewMatrix, projectionMatrix);                                                //draw test 3d model
 
-            //Cube center = new Cube(Vector3.Zero, Color.White, 0.4f);
+            //Cube center = new Cube(Vector3.Zero, Color.White, 0.4f);                                                  //draw white sphere at origin
             //center.draw(GraphicsDevice);
-            //_spriteBatch.Draw(_font.Texture, Vector2.Zero, Color.White);      //draw font texture
-            //_fontInterpreter.drawString("hello_world", Vector2.Zero, 660, 1000, 1, Vector3.Zero, Vector3.One);      //test _fontinterpreter
+            //_spriteBatch.Draw(_font.Texture, Vector2.Zero, Color.White);                                              //draw font texture
+            //_fontInterpreter.drawString("hello_world", Vector2.Zero, 660, 1000, 1, Vector3.Zero, Vector3.One);        //test _fontinterpreter
 
             _spriteBatch.DrawString(_font, "FPS: " + 1 / (float)gameTime.ElapsedGameTime.TotalSeconds, new Vector2(100, 100), Color.White);
 
