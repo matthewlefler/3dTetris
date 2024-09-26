@@ -35,9 +35,9 @@ namespace BoardClass
         public bool zoomInAnimation = true;
         public bool startAnimation = false;
         public float startTimer = 0f;
-        public float startTimerSpeed = 1f;
+        public float startTimerSpeed = 0.5f;
         public float startText = 3;
-        public float startTextScale = 1;
+        public float startTextScale = 0;
         public Vector3 startTextColor = Vector3.One;
 
         VertexPositionColor[] lines;

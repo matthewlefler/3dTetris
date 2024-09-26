@@ -518,10 +518,10 @@ namespace ThreeDTetris
                             board1.startTimer -= 1;
                             board1.startText -= 1;
 
-                            board1.startTextScale = 1;
+                            board1.startTextScale = 0;
                             board1.startTextColor = Vector3.One;
                         }
-                        board1.startTextScale -= secondsAfterLastFrame * board1.startTimerSpeed;
+                        board1.startTextScale += secondsAfterLastFrame * board1.startTimerSpeed;
                         board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
                     }
 
@@ -906,7 +906,7 @@ namespace ThreeDTetris
                     if (board1.startAnimation)
                     {
                         _fontInterpreter.drawStringRelativeToCamera("start in:", new Vector2(0, 200), 660, 5, 1f, Vector3.Zero, Vector3.One);
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(2 * MathF.PI - (2f * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
                     _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
