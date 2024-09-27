@@ -15,6 +15,7 @@ namespace MenuClass
     {
         Menu,
         Pause,
+        SoloCustom,
         SoloStandard,
         SoloThreeD,
         OneVersesOneStandard,

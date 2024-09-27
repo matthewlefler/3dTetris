@@ -79,7 +79,10 @@ namespace PieceClass
         private GraphicsDevice _graphicsDevice;
         private Board board;
 
+        //grounded elements to control when peicces can no longer be controled and when to spawn the next piece
         public bool grounded = false;
+        private float timeGrounded = 0f; //count the amount of time a piece has to be unable to move down
+        private float maxTimeGrounded = 1.5f; //amount of time a piece has to be unable to move down to be then grounded/fixed in place
 
         //constructor for the class Piece
         public Piece(piecePrefab piecePrefab, Vector3 position, Vector3 bottomLeftPosition, GraphicsDevice graphicsDevice, Board board)
@@ -183,7 +186,7 @@ namespace PieceClass
             }
         }
 
-        public void move(Vector3 offsets)
+        public void move(Vector3 offsets, float timePast)
         {
             List<Vector3> originalPositions = new List<Vector3>();
             List<Vector3> newPositions = new List<Vector3>();
@@ -224,7 +227,15 @@ namespace PieceClass
 
                 if (isTheMoveLegal == -1)
                 {
-                    grounded = true;
+                    if(timeGrounded > maxTimeGrounded)
+                    {
+                        this.grounded = true;
+                    }
+                    else
+                    {
+                        this.timeGrounded += timePast;
+                    }
+                    
                     _position = Vector3.Floor(_position);
                     foreach (Cube cube in cubes)
                     {

@@ -35,7 +35,7 @@ namespace BoardClass
         public bool zoomInAnimation = true;
         public bool startAnimation = false;
         public float startTimer = 0f;
-        public float startTimerSpeed = 0.5f;
+        public float startTimerSpeed = 0.8f;
         public float startText = 3;
         public float startTextScale = 0;
         public Vector3 startTextColor = Vector3.One;
@@ -93,6 +93,15 @@ namespace BoardClass
             this.width = width;
             this.height = height;
             this.depth = depth;
+
+            const float c = 0.5f;
+            float longestSide = depth;
+            if(width > depth)
+            {
+                longestSide = width;
+            }
+
+            camera._finalDistanceFromMiddle *= (((-c + 1f) * longestSide) / 10f) + c;
 
             _graphicsDevice = graphicsDevice;
             this.camera = camera;
@@ -281,6 +290,34 @@ namespace BoardClass
             }
         }
 
+        public void clear()
+        {
+            const float c = 0.5f;
+            float longestSide = depth;
+            if(width > depth)
+            {
+                longestSide = width;
+            }
+
+            camera._finalDistanceFromMiddle *= (((-c + 1f) * longestSide) / 10f) + c;
+
+            float cameraHeight = camera.cameraHeight;
+
+            calcVaribleBoardValues();
+
+            //create queue
+            nextPieces = new Queue<Piece>();
+            pieceQueueStartPostition = new Vector3(width + 4, 0, depth / 2 - 1);
+
+            Shuffle(piecesPresets);
+
+            for (int i = numberOfQueuedPieces; i > 0; i--)
+            {
+                nextPieces.Enqueue(new Piece(piecesPresets[i], pieceQueueStartPostition + new Vector3(0, i * 4f - 4f, 0), bottomLeftPosition, _graphicsDevice, this));
+                piecesPresetCounter++;
+            }
+        }
+
         public void addNextPiece()
         {
             selectedPiece = nextPieces.Dequeue();
@@ -307,26 +344,26 @@ namespace BoardClass
             pieceList.Add(selectedPiece);
         }
 
-        public void moveSelectedPieceRelativeToCamera(Vector3 offsets)
+        public void moveSelectedPieceRelativeToCamera(Vector3 offsets, float timePast)
         {
             if (selectedPiece != null)
             {
                 float xRotation = camera.orbitRotations.X;
                 if (xRotation >= 0 && xRotation <= MathHelper.PiOver4 || xRotation > MathHelper.PiOver4 * 7 && xRotation <= MathHelper.PiOver4 * 8)
                 {
-                    selectedPiece.move(new Vector3(offsets.Z, offsets.Y, -offsets.X));
+                    selectedPiece.move(new Vector3(offsets.Z, offsets.Y, -offsets.X), timePast);
                 }
                 if (xRotation > MathHelper.PiOver4 && xRotation <= MathHelper.PiOver4 * 3)
                 {
-                    selectedPiece.move(new Vector3(offsets.X, offsets.Y, offsets.Z));
+                    selectedPiece.move(new Vector3(offsets.X, offsets.Y, offsets.Z), timePast);
                 }
                 if (xRotation > MathHelper.PiOver4 * 3 && xRotation <= MathHelper.PiOver4 * 5)
                 {
-                    selectedPiece.move(new Vector3(-offsets.Z, offsets.Y, offsets.X));
+                    selectedPiece.move(new Vector3(-offsets.Z, offsets.Y, offsets.X), timePast);
                 }
                 if (xRotation > MathHelper.PiOver4 * 5 && xRotation <= MathHelper.PiOver4 * 7)
                 {
-                    selectedPiece.move(new Vector3(-offsets.X, offsets.Y, -offsets.Z));
+                    selectedPiece.move(new Vector3(-offsets.X, offsets.Y, -offsets.Z), timePast);
                 }
             }
         }

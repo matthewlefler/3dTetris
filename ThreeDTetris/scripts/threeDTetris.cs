@@ -231,8 +231,8 @@ namespace ThreeDTetris
             player1Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
             player2Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
 
-            board1 = new BoardClass.Board(6, 20, 6, _graphics.GraphicsDevice, piecesPresets, player1Camera);
-            board2 = new BoardClass.Board(6, 20, 6, _graphics.GraphicsDevice, piecesPresets, player2Camera);
+            board1 = new BoardClass.Board(10, 20, 10, _graphics.GraphicsDevice, piecesPresets, player1Camera);
+            board2 = new BoardClass.Board(10, 20, 10, _graphics.GraphicsDevice, piecesPresets, player2Camera);
 
             gameState = gameStates.Menu;
 
@@ -366,7 +366,8 @@ namespace ThreeDTetris
             settingsMenu.add("Board Size", boardSizeMenu, gameStates.Menu);
             settingsMenu.add("Back", _mainMenu, gameStates.Menu);
 
-            playMenu.add("Standard", playMenu, gameStates.SoloStandard);
+            playMenu.add("Solo Custom", playMenu, gameStates.SoloCustom);
+            playMenu.add("Solo Standard", playMenu, gameStates.SoloStandard);
             playMenu.add("Solo 3D", playMenu, gameStates.SoloThreeD);
             playMenu.add("Back", _mainMenu, gameStates.Menu);
 
@@ -474,12 +475,14 @@ namespace ThreeDTetris
 
 
 
-                case gameStates.SoloStandard:
+                case gameStates.SoloCustom:
+                    
+                    //anim to zoom in from menu position
                     if (board1.zoomInAnimation == true)
                     {
                         if (player1Camera.distanceAnimation == null)
                         {
-                            board1 = new BoardClass.Board(10, 20, 1, _graphics.GraphicsDevice, piecesPresets, player1Camera);
+                            board1.clear();
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
                             player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle, startDistance);
@@ -500,7 +503,8 @@ namespace ThreeDTetris
                             }
                         }
                     }
-                    
+
+                    //start anim
                     if (board1.startAnimation == true)
                     {
                         board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
@@ -521,10 +525,36 @@ namespace ThreeDTetris
                             board1.startTextScale = 0;
                             board1.startTextColor = Vector3.One;
                         }
-                        board1.startTextScale += secondsAfterLastFrame * board1.startTimerSpeed;
+                        board1.startTextScale += -1 * (3f/4f) * secondsAfterLastFrame * board1.startTimerSpeed;
                         board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
                     }
 
+                    //start anim
+                    if (board1.startAnimation == true)
+                    {
+                        board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
+                        if (board1.startTimer > 1)
+                        {
+                            if (board1.startText == 1)
+                            {
+                                board1.enabled = true;
+                                board1.startTimer = 0;
+                                board1.startText = 3;
+                                board1.startAnimation = false;
+                                newPieceTimeCounter = newPieceTime;
+                                break;
+                            }
+                            board1.startTimer -= 1;
+                            board1.startText -= 1;
+
+                            board1.startTextScale = 0;
+                            board1.startTextColor = Vector3.One;
+                        }
+                        board1.startTextScale += -1 * (3f/4f) * secondsAfterLastFrame * board1.startTimerSpeed;
+                        board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
+                    }
+
+                    //main game state
                     if (board1.enabled == true)
                     {
                         //key inputs to manipulate camera
@@ -561,28 +591,28 @@ namespace ThreeDTetris
                             //translate piece
                             if (runOnKeyDown(Keys.Up))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Forward);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Down))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Backward);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Right))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Right);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Left))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Left);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
                             }
 
                             //move piece down faster
                             if (Keyboard.GetState().IsKeyDown(Keys.Space))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
                             }
 
                             //rotate piece
@@ -649,7 +679,7 @@ namespace ThreeDTetris
                         //and lose game if piece gets grounded higher than board height
                         foreach (Piece piece in board1.pieceList)
                         {
-                            piece.move(new Vector3(0f, board1.downSpeed * secondsAfterLastFrame, 0f));
+                            piece.move(new Vector3(0f, board1.downSpeed * secondsAfterLastFrame, 0f), secondsAfterLastFrame);
                             if (piece.position.Y > board1.height && piece.grounded == true)
                             {
                                 gameState = gameStates.Lost;
@@ -661,7 +691,231 @@ namespace ThreeDTetris
                     }
 
                     break;
+
+
+
+                case gameStates.SoloStandard:
+
+                    //anim to zoom in from menu position
+                    if (board1.zoomInAnimation == true)
+                    {
+                        if (player1Camera.distanceAnimation == null)
+                        {
+                            board1 = new BoardClass.Board(10, 20, 1, _graphics.GraphicsDevice, piecesPresets, player1Camera);
+                            float startDistance = 10000;
+                            player1Camera.distanceFromMiddle = startDistance;
+                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle, startDistance);
+                            mainMenuPosition = player1Camera.position - Vector3.Normalize(player1Camera.position) * 400;
+                        }
+                        else
+                        {
+                            if (player1Camera.distanceAnimation.done == true)
+                            {
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
+                                player1Camera.distanceAnimation = null;
+                                board1.startAnimation = true;
+                                board1.zoomInAnimation = false;
+                            }
+                            else
+                            {
+                                player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame/2f);
+                            }
+                        }
+                    }
+
+                    //start anim
+                    if (board1.startAnimation == true)
+                    {
+                        board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
+                        if (board1.startTimer > 1)
+                        {
+                            if (board1.startText == 1)
+                            {
+                                board1.enabled = true;
+                                board1.startTimer = 0;
+                                board1.startText = 3;
+                                board1.startAnimation = false;
+                                newPieceTimeCounter = newPieceTime;
+                                break;
+                            }
+                            board1.startTimer -= 1;
+                            board1.startText -= 1;
+
+                            board1.startTextScale = 0;
+                            board1.startTextColor = Vector3.One;
+                        }
+                        board1.startTextScale += -1 * (3f/4f) * secondsAfterLastFrame * board1.startTimerSpeed;
+                        board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
+                    }
+
+                    //start anim
+                    if (board1.startAnimation == true)
+                    {
+                        board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
+                        if (board1.startTimer > 1)
+                        {
+                            if (board1.startText == 1)
+                            {
+                                board1.enabled = true;
+                                board1.startTimer = 0;
+                                board1.startText = 3;
+                                board1.startAnimation = false;
+                                newPieceTimeCounter = newPieceTime;
+                                break;
+                            }
+                            board1.startTimer -= 1;
+                            board1.startText -= 1;
+
+                            board1.startTextScale = 0;
+                            board1.startTextColor = Vector3.One;
+                        }
+                        board1.startTextScale += -1 * (3f/4f) * secondsAfterLastFrame * board1.startTimerSpeed;
+                        board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
+                    }
+
+                    //main game state
+                    if (board1.enabled == true)
+                    {
+                        //key inputs to manipulate camera
+                        if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        {
+                            player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        {
+                            player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
+                        }
+                        if (runOnKeyDown(Keys.D) && camera1Animation == null)
+                        {
+                            camera1Animation = new AnimationFloat(0, -MathHelper.PiOver2, 0);
+                        }
+                        if (runOnKeyDown(Keys.A) && camera1Animation == null)
+                        {
+                            camera1Animation = new AnimationFloat(0, MathHelper.PiOver2, 0);
+                        }
+                        //camera x rotation animation
+                        if (camera1Animation != null)
+                        {
+                            player1Camera.move(camera1Animation.deltaEaseInEaseOut(secondsAfterLastFrame * (player1Camera.speed + 3)), 0);
+
+                            if (camera1Animation.done)
+                            {
+                                camera1Animation = null;
+                            }
+                        }
+
+                        //key inputs to move and rotate selected piece
+                        if (board1.selectedPiece != null)
+                        {
+                            //translate piece
+                            if (runOnKeyDown(Keys.Up))
+                            {
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
+                            }
+
+                            if (runOnKeyDown(Keys.Down))
+                            {
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
+                            }
+
+                            if (runOnKeyDown(Keys.Right))
+                            {
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
+                            }
+
+                            if (runOnKeyDown(Keys.Left))
+                            {
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
+                            }
+
+                            //move piece down faster
+                            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                            {
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
+                            }
+
+                            //rotate piece
+                            if (runOnKeyDown(Keys.I))
+                            {
+                                board1.rotateSelectedPieceRelativeToCamera(new Vector3(1, 0, 0));
+                            }
+                            if (runOnKeyDown(Keys.J))
+                            {
+                                board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, 1));
+                            }
+                            if (runOnKeyDown(Keys.K))
+                            {
+                                board1.rotateSelectedPieceRelativeToCamera(new Vector3(-1, 0, 0));
+                            }
+                            if (runOnKeyDown(Keys.L))
+                            {
+                                board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, -1));
+                            }
+
+                        }
+
+
+                        //increment the time since last piece
+                        newPieceTimeCounter += secondsAfterLastFrame;
+
+                        //animate the size of each block in the selected piece when it is spawned in from 0 to 1f
+                        if (board1.addPieceAnimation != null)
+                        {
+                            if (board1.selectedPiece.position.Y < board1.height - 2 || board1.selectedPiece.grounded == true)
+                            {
+                                board1.selectedPiece.blockSize = board1.addPieceAnimation.Lerp(3f);
+                            }
+                            else
+                            {
+                                board1.selectedPiece.blockSize = board1.addPieceAnimation.Lerp(secondsAfterLastFrame * 2f);
+                            }
+
+                            if (board1.addPieceAnimation.done)
+                            {
+                                board1.addPieceAnimation = null;
+                            }
+                        }
+
+                        //add the new piece if suffencient time has passed
+                        if (board1.selectedPiece != null)
+                        {
+                            if (board1.selectedPiece.grounded == true)
+                            {
+                                newPieceTimeCounter = 0;
+
+                                board1.addNextPiece();
+                            }
+                        }
+
+                        if (newPieceTimeCounter > newPieceTime)
+                        {
+                            newPieceTimeCounter = 0;
+
+                            board1.addNextPiece();
+                        }
+
+                        //move each piece in the board down.
+                        //and lose game if piece gets grounded higher than board height
+                        foreach (Piece piece in board1.pieceList)
+                        {
+                            piece.move(new Vector3(0f, board1.downSpeed * secondsAfterLastFrame, 0f), secondsAfterLastFrame);
+                            if (piece.position.Y > board1.height && piece.grounded == true)
+                            {
+                                gameState = gameStates.Lost;
+                                board1.zoomInAnimation = true;
+                            }
+                        }
+
+                        board1.lineClear();
+                    }
+
+                    break;
+                
+                
+                
                 case gameStates.SoloThreeD:
+                    
+                    //anim to zoom in from menu position
                     if (board1.zoomInAnimation == true)
                     {
                         if (player1Camera.distanceAnimation == null)
@@ -683,33 +937,9 @@ namespace ThreeDTetris
                             }
                             else
                             {
-                                player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame);
+                                player1Camera.distanceFromMiddle = player1Camera.distanceAnimation.easeInEaseOutBump(secondsAfterLastFrame/2f);
                             }
                         }
-                    }
-                    if(board1.startAnimation == true)
-                    {
-
-                        board1.startTimer += secondsAfterLastFrame * board1.startTimerSpeed;
-                        if(board1.startTimer > 1)
-                        {
-                            if(board1.startText == 1)
-                            {
-                                board1.enabled = true;
-                                board1.startTimer = 0;
-                                board1.startText = 3;
-                                board1.startAnimation = false;
-                                newPieceTimeCounter = newPieceTime;
-                                break;
-                            }
-                            board1.startTimer -= 1;
-                            board1.startText -= 1;
-
-                            board1.startTextScale = 10;
-                            board1.startTextColor = Vector3.One;
-                        }
-                        board1.startTextScale -= secondsAfterLastFrame * 9 * board1.startTimerSpeed;
-                        board1.startTextColor -= new Vector3(0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame, 0.3f * secondsAfterLastFrame) * board1.startTimerSpeed;
                     }
                     if(board1.enabled == true)
                     {
@@ -747,28 +977,28 @@ namespace ThreeDTetris
                             //translate piece
                             if (runOnKeyDown(Keys.Up))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Forward);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Down))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Backward);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Right))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Right);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
                             }
 
                             if (runOnKeyDown(Keys.Left))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Left);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
                             }
 
                             //move piece down faster
                             if (Keyboard.GetState().IsKeyDown(Keys.Space))
                             {
-                                board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f);
+                                board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
                             }
 
                             //rotate piece
@@ -835,7 +1065,7 @@ namespace ThreeDTetris
                         //and lose game if piece gets grounded higher than board height
                         foreach (Piece piece in board1.pieceList)
                         {
-                            piece.move(new Vector3(0f, board1.downSpeed * secondsAfterLastFrame, 0f));
+                            piece.move(new Vector3(0f, board1.downSpeed * secondsAfterLastFrame, 0f), secondsAfterLastFrame);
                             if(piece.position.Y > board1.height && piece.grounded == true)
                             {
                                 gameState = gameStates.Lost;
@@ -896,6 +1126,21 @@ namespace ThreeDTetris
                     _fontInterpreter.menuDrawStringInWorld("continue?", player1Camera.position, 1000, 1.4f, Vector3.Zero, Vector3.One, continueText.Length + 1);
                     break;
 
+                
+
+                case gameStates.SoloCustom:
+                    if(board1.zoomInAnimation == true)
+                    {
+                        selectedMenu.draw(_fontInterpreter, mainMenuPosition);
+                    }
+                    if (board1.startAnimation)
+                    {
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
+                    }
+                    board1.draw(basicEffect);
+                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
+                    break;
+
 
 
                 case gameStates.SoloStandard:
@@ -905,7 +1150,6 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera("start in:", new Vector2(0, 200), 660, 5, 1f, Vector3.Zero, Vector3.One);
                         _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
@@ -921,7 +1165,6 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera("start in", new Vector2(0, 200), 660, 100, 3, Vector3.Zero, Vector3.One);
                         _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, board1.startTextScale/100, Vector3.Zero, board1.startTextColor);
                     }
                     board1.draw(basicEffect);
