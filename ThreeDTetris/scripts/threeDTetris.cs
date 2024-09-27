@@ -562,7 +562,7 @@ namespace ThreeDTetris
                     {
                         if (player1Camera.distanceAnimation == null)
                         {
-                            board1.clear();
+                            board1.reset();
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
                             player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle, startDistance);
@@ -1202,7 +1202,7 @@ namespace ThreeDTetris
                 case gameStates.Lost:
                     board1.draw(basicEffect);
                     string continueText = "continue?";
-                    _fontInterpreter.menuDrawStringInWorld("continue?", player1Camera.position, 1000, 1.4f, Vector3.Zero, Vector3.One, continueText.Length + 1);
+                    _fontInterpreter.menuDrawStringInWorld("continue?", 10f * player1Camera.position, 1000, 0.1f, Vector3.Zero, Vector3.One, continueText.Length + 1);
                     break;
 
                 

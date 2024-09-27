@@ -291,8 +291,20 @@ namespace BoardClass
             }
         }
 
-        public void clear()
+        public void reset()
         {
+            enabled = false;
+            zoomInAnimation = true;
+            startAnimation = false;
+
+            startTimer = 0f;
+            startTimerSpeed = 0.8f;
+            startText = 3;
+            startTextScale = 0;
+            startTextColor = Vector3.One;
+
+            this.pieceList.Clear();
+
             this.piecesPresetCounter = 0;
             
             const float c = 0.5f;
