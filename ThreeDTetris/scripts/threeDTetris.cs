@@ -349,7 +349,7 @@ namespace ThreeDTetris
 
             // Set window size if running debug (in release it will be fullscreen)
             #region
-#if DEBUG
+#if false // DEBUG
 			_graphics.PreferredBackBufferWidth = 594; //594 on framework 16    devcade monitor is 9 wide by 21 tall or an aspect ration of 9/21
 			_graphics.PreferredBackBufferHeight = 1386; //1386 on framework 16 
 			_graphics.ApplyChanges();
@@ -1214,10 +1214,10 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
-                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
+                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(_graphics.PreferredBackBufferWidth/200, 8), 660, 1000, scale: 0.05f, Vector3.Zero, Vector3.One);
                     break;
 
 
@@ -1229,10 +1229,10 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect);
-                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
+                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(_graphics.PreferredBackBufferWidth, 2), 660, 1000, 1, Vector3.Zero, Vector3.One);
                     break;
 
 
@@ -1244,10 +1244,10 @@ namespace ThreeDTetris
                     }
                     if (board1.startAnimation)
                     {
-                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 1.0f), 6, 100, board1.startTextScale/100, Vector3.Zero, board1.startTextColor);
+                        _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, board1.startTextScale/100, Vector3.Zero, board1.startTextColor);
                     }
                     board1.draw(basicEffect);
-                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(300, 200), 660, 1000, 1, Vector3.Zero, Vector3.One);
+                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(_graphics.PreferredBackBufferWidth, 2), 660, 1000, 1, Vector3.Zero, Vector3.One);
                     break;
             }
 

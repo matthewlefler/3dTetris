@@ -25,7 +25,7 @@ namespace CameraClass
 
         public float speed = 2f;
 
-        public float _finalDistanceFromMiddle = 100f;
+        public float _finalDistanceFromMiddle;
         private float _distanceFromMiddle = 35f;
         public float cameraHeight { get; private set; }
         public float distanceFromMiddle { set { absoluteMove(_orbitRotations.X, _orbitRotations.Y); _distanceFromMiddle = value; } get { return _distanceFromMiddle; } }
@@ -43,7 +43,13 @@ namespace CameraClass
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathF.PI / 4f, (float)graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight, 0.01f, 10000f);
             //projectionMatrix = Matrix.CreateOrthographic(30 * graphicsDevice.Viewport.AspectRatio, 30, 0.01f, 100f);
 
-            _finalDistanceFromMiddle = 40000 * (1f/(float)graphics.PreferredBackBufferWidth) + 14f;
+            int shortestWindowLength = graphics.PreferredBackBufferWidth;
+            if(graphics.PreferredBackBufferWidth > graphics.PreferredBackBufferHeight)
+            {
+                shortestWindowLength = graphics.PreferredBackBufferHeight;
+            }
+
+            _finalDistanceFromMiddle = shortestWindowLength/40f;
         }
 
         public void move(float x, float y)

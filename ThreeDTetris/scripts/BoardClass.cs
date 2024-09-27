@@ -174,7 +174,7 @@ namespace BoardClass
 
             foreach (Piece piece in nextPieces)
             {
-                piece.Draw(effect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
+                piece.DrawMatrixAfter(effect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
             }
 
             if (selectedPiece != null && selectedPiece.grounded == false)   
@@ -208,7 +208,9 @@ namespace BoardClass
 
                 if(newPositions.Count > 0)
                 {
-                    selectedPiece.Draw(effect,  Matrix.CreateTranslation(new Vector3(0.1f, 0.1f, 0.1f)) * Matrix.CreateScale(0.9f) * Matrix.CreateTranslation(-1f * new Vector3(0.1f, 0.1f, 0.1f)) * Matrix.CreateTranslation(0, newPositions[0].Y - orignialPositions[0].Y + 1, 0));
+                    selectedPiece.blockSize = 0.8f;
+                    selectedPiece.DrawMatrixAfter(effect, Matrix.CreateTranslation(0, newPositions[0].Y - orignialPositions[0].Y + 1f, 0));
+                    selectedPiece.blockSize = 1f;
                 }
             }
 
@@ -314,7 +316,7 @@ namespace BoardClass
                 longestSide = width;
             }
 
-            boardDistanceFromMiddle = (((-c + 1f) * longestSide) / 10f) + c;
+            boardDistanceFromMiddle = 1;
 
             float cameraHeight = camera.cameraHeight;
 

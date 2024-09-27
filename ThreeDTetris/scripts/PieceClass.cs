@@ -155,11 +155,32 @@ namespace PieceClass
             }
         }
 
-        public void Draw(BasicEffect effect, Matrix Matrix)
+        public void DrawMatrixAfter(BasicEffect effect, Matrix matrix)
         {
             foreach (Cube cube in cubes)
             {
-                effect.World = Matrix * cube.worldMatrix;
+                effect.World = cube.worldMatrix * matrix;
+                effect.Texture = cubeTexture;
+
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    VertexPositionColor point = new VertexPositionColor(rotationPoint, Color.White);
+                    VertexPositionColor[] points = new VertexPositionColor[] { point };
+
+                    _graphicsDevice.DrawUserPrimitives(PrimitiveType.PointList, points, 0, 1);
+                }
+
+                cube.draw(effect);
+            }
+        }
+
+        public void DrawMatrixBefore(BasicEffect effect, Matrix matrix)
+        {
+            foreach (Cube cube in cubes)
+            {
+                effect.World = matrix * cube.worldMatrix;
                 effect.Texture = cubeTexture;
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
