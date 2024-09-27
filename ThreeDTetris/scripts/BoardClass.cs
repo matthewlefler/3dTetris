@@ -83,6 +83,7 @@ namespace BoardClass
         //refrence positions used in varying areas (botleft in translation matrix for peices, top middle as ref to spawn new pieces)
         public Vector3 bottomLeftPosition { get; private set; }
         public Vector3 topMiddle { get; private set; }
+        public float boardDistanceFromMiddle { get; private set; }
 
         //animations relating to the board like spawning piece animations and new piece addition animations
         public AnimationFloat addPieceAnimation;
@@ -101,7 +102,7 @@ namespace BoardClass
                 longestSide = width;
             }
 
-            camera._finalDistanceFromMiddle *= (((-c + 1f) * longestSide) / 10f) + c;
+            boardDistanceFromMiddle = (((-c + 1f) * longestSide) / 10f) + c;
 
             _graphicsDevice = graphicsDevice;
             this.camera = camera;
@@ -207,7 +208,7 @@ namespace BoardClass
 
                 if(newPositions.Count > 0)
                 {
-                    selectedPiece.Draw(effect, Matrix.CreateTranslation(0, newPositions[0].Y - orignialPositions[0].Y + 1, 0) * Matrix.CreateScale(1f));
+                    selectedPiece.Draw(effect,  Matrix.CreateTranslation(new Vector3(0.1f, 0.1f, 0.1f)) * Matrix.CreateScale(0.9f) * Matrix.CreateTranslation(-1f * new Vector3(0.1f, 0.1f, 0.1f)) * Matrix.CreateTranslation(0, newPositions[0].Y - orignialPositions[0].Y + 1, 0));
                 }
             }
 
@@ -292,6 +293,8 @@ namespace BoardClass
 
         public void clear()
         {
+            this.piecesPresetCounter = 0;
+            
             const float c = 0.5f;
             float longestSide = depth;
             if(width > depth)
@@ -299,7 +302,7 @@ namespace BoardClass
                 longestSide = width;
             }
 
-            camera._finalDistanceFromMiddle *= (((-c + 1f) * longestSide) / 10f) + c;
+            boardDistanceFromMiddle = (((-c + 1f) * longestSide) / 10f) + c;
 
             float cameraHeight = camera.cameraHeight;
 

@@ -159,7 +159,7 @@ namespace PieceClass
         {
             foreach (Cube cube in cubes)
             {
-                effect.World = cube.worldMatrix * Matrix;
+                effect.World = Matrix * cube.worldMatrix;
                 effect.Texture = cubeTexture;
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)

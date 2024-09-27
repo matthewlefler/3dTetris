@@ -21,6 +21,7 @@ using PieceClass;
 using BoardClass;
 using SimpleAnimation;
 using TextRenderer;
+using input;
 
 // MAKE SURE YOU RENAME ALL PROJECT FILES FROM DevcadeGame TO YOUR YOUR GAME NAME
 namespace ThreeDTetris
@@ -66,6 +67,101 @@ namespace ThreeDTetris
         {
             Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
         }
+
+
+        //input handler
+        private enum gameActions
+        {
+            //camera actions
+            moveCameraUp,
+            moveCameraDown,
+            moveCameraLeft,
+            moveCameraRight,
+
+            //piece actions
+            translatePieceLeft,
+            translatePieceRight,
+            translatePieceForward,
+            translatePieceBackward,
+
+            rotatePieceClockwise,
+            rotatePieceCounterClockwise,
+            rotatePieceAwayFromCamera,
+            rotatePieceTowardsCamera,
+
+            movePieceDownFaster,
+
+            //menu actions
+            menuSelectionDown,
+            menuSelectionUp,
+            menuSelectionLeft,
+            menuSelectionRight,
+
+            selectMenuSelection,
+
+            //pause
+            pause,
+        }
+
+        private static Dictionary<int, string> actionToInputString = new Dictionary<int, string>
+        {
+            {(int)gameActions.moveCameraUp, "move camera up"},
+            {(int)gameActions.moveCameraDown, "move camera down"},
+            {(int)gameActions.moveCameraLeft, "move camera left"},
+            {(int)gameActions.moveCameraRight, "move camera right"},
+            
+            {(int)gameActions.translatePieceLeft, "translate piece left"},
+            {(int)gameActions.translatePieceRight, "translate piece right"},
+            {(int)gameActions.translatePieceForward, "translate piece away from camera"},
+            {(int)gameActions.translatePieceBackward, "translate piece towards camera"},
+            
+            {(int)gameActions.rotatePieceClockwise, "rotate piece clockwise"},
+            {(int)gameActions.rotatePieceCounterClockwise, "rotate piece counterclockwise"},
+            {(int)gameActions.rotatePieceAwayFromCamera, "rotate piece away from camera"},
+            {(int)gameActions.rotatePieceTowardsCamera, "rotate piece towards from camera"},
+            
+            {(int)gameActions.movePieceDownFaster, "move piece down faster"},
+            
+            {(int)gameActions.menuSelectionDown, "menu selection down"},
+            {(int)gameActions.menuSelectionUp, "menu selection up"},
+            {(int)gameActions.menuSelectionLeft, "menu selection left"},
+            {(int)gameActions.menuSelectionRight, "menu selection right"},
+            
+            {(int)gameActions.selectMenuSelection, "select menu selection"},
+
+            {(int)gameActions.pause, "pause game"},
+        };
+
+        private static Dictionary<string, inputKey> defaultGameKeys = new Dictionary<string, inputKey>
+        {
+            //(int  , Input.ArcadeButtons )
+            {"move camera up", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.W})},
+            {"move camera down", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.S})},
+            {"move camera left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.A})},
+            {"move camera right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.D})},
+            
+            {"translate piece left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Left})},
+            {"translate piece right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Right})},
+            {"translate piece away from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Up})},
+            {"translate piece towards camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Down})},
+            
+            {"rotate piece clockwise", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.L})},
+            {"rotate piece counterclockwise", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.J})},
+            {"rotate piece away from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.I})},
+            {"rotate piece towards from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.K})},
+            
+            {"move piece down faster", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B1 )}, new Keys?[]{Keys.Space})},
+            
+            {"menu selection down", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown )}, new Keys?[]{Keys.Down})},
+            {"menu selection up", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp )}, new Keys?[]{Keys.Up})},
+            {"menu selection left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft )}, new Keys?[]{Keys.Left})},
+            {"menu selection right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight )}, new Keys?[]{Keys.Right})},
+            
+            {"select menu selection", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.Enter})},
+            {"pause game", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.Menu )}, new Keys?[]{Keys.P})},
+        };
+
+        private static InputHandler inputHandler = new InputHandler(defaultGameKeys, actionToInputString);
 
         //the models:
         //all 3d models are to be imported in the .fbx format
@@ -352,6 +448,8 @@ namespace ThreeDTetris
                 board1.depth = value;
             }
 
+
+
             Integer boardDepthValue = new Integer(new Func<int>(getBoardDepth), new Action<int>(setBoardDepth));
 
             IntValueMenu boardWidth = new IntValueMenu(_graphics.GraphicsDevice, _font, windowSize, boardWidthValue, 2, settingsMenu);
@@ -388,27 +486,7 @@ namespace ThreeDTetris
             _fontInterpreter = new FontInterpreter(_font, GraphicsDevice, windowSize, fontEffect, player1Camera);
         }
 
-        //keylist for only activating keys once per press;
-        List<Keys> keyList = new List<Keys>();
-        //returns true only on the first time a key is down
-        private bool runOnKeyDown(Keys key)
-        {
-            if (Keyboard.GetState().IsKeyDown(key))
-            {
-                if (!keyList.Contains(key))
-                {
 
-                    keyList.Add(key);
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-                keyList.Remove(key);
-                return false;
-            }
-        }
 
         /// <summary>
         /// Your main update loop. This runs once every frame, over and over.
@@ -434,15 +512,15 @@ namespace ThreeDTetris
             switch (gameState)
             {
                 case gameStates.Menu:
-                    if (runOnKeyDown(Keys.Up))
+                    if (inputHandler.runOnKeyDown((int)gameActions.menuSelectionUp))
                     {
                         selectedMenu.ChangeSelectedOptionUp();
                     }
-                    if (runOnKeyDown(Keys.Down))
+                    if (inputHandler.runOnKeyDown((int)gameActions.menuSelectionDown))
                     {
                         selectedMenu.ChangeSelectedOptionDown();
                     }
-                    if (runOnKeyDown(Keys.Enter))
+                    if (inputHandler.runOnKeyDown((int)gameActions.selectMenuSelection))
                     {
                         selectedMenu = selectedMenu.selectOption(out gameStates state);
                         gameState = state;
@@ -466,10 +544,12 @@ namespace ThreeDTetris
 
 
                 case gameStates.Lost:
-                    if (runOnKeyDown(Keys.Enter))
+                    if (inputHandler.runOnKeyDown((int)gameActions.selectMenuSelection))
                     {
                         gameState = gameStates.Menu;
                         selectedMenu = _mainMenu;
+                        player1Camera.absoluteMove((1f/2f) * MathF.PI,0);
+                        player2Camera.absoluteMove((1f/2f) * MathF.PI,0);
                     }
                     break;
 
@@ -485,14 +565,14 @@ namespace ThreeDTetris
                             board1.clear();
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
-                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle, startDistance);
+                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle, startDistance);
                             mainMenuPosition = player1Camera.position - Vector3.Normalize(player1Camera.position) * 400;
                         }
                         else
                         {
                             if (player1Camera.distanceAnimation.done == true)
                             {
-                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle;
                                 player1Camera.distanceAnimation = null;
                                 board1.startAnimation = true;
                                 board1.zoomInAnimation = false;
@@ -558,19 +638,19 @@ namespace ThreeDTetris
                     if (board1.enabled == true)
                     {
                         //key inputs to manipulate camera
-                        if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraUp))
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (runOnKeyDown(Keys.D) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraRight) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, -MathHelper.PiOver2, 0);
                         }
-                        if (runOnKeyDown(Keys.A) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraLeft) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, MathHelper.PiOver2, 0);
                         }
@@ -589,46 +669,46 @@ namespace ThreeDTetris
                         if (board1.selectedPiece != null)
                         {
                             //translate piece
-                            if (runOnKeyDown(Keys.Up))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceForward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Down))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceBackward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Right))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceRight))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Left))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceLeft))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
                             }
 
                             //move piece down faster
-                            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                            if (inputHandler.isKeyDown((int)gameActions.movePieceDownFaster))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
                             }
 
                             //rotate piece
-                            if (runOnKeyDown(Keys.I))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceAwayFromCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.J))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceCounterClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, 1));
                             }
-                            if (runOnKeyDown(Keys.K))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceTowardsCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(-1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.L))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, -1));
                             }
@@ -704,14 +784,14 @@ namespace ThreeDTetris
                             board1 = new BoardClass.Board(10, 20, 1, _graphics.GraphicsDevice, piecesPresets, player1Camera);
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
-                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle, startDistance);
+                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle, startDistance);
                             mainMenuPosition = player1Camera.position - Vector3.Normalize(player1Camera.position) * 400;
                         }
                         else
                         {
                             if (player1Camera.distanceAnimation.done == true)
                             {
-                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle;
                                 player1Camera.distanceAnimation = null;
                                 board1.startAnimation = true;
                                 board1.zoomInAnimation = false;
@@ -777,19 +857,19 @@ namespace ThreeDTetris
                     if (board1.enabled == true)
                     {
                         //key inputs to manipulate camera
-                        if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraUp))
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (runOnKeyDown(Keys.D) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraRight) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, -MathHelper.PiOver2, 0);
                         }
-                        if (runOnKeyDown(Keys.A) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraLeft) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, MathHelper.PiOver2, 0);
                         }
@@ -808,46 +888,46 @@ namespace ThreeDTetris
                         if (board1.selectedPiece != null)
                         {
                             //translate piece
-                            if (runOnKeyDown(Keys.Up))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceForward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Down))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceBackward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Right))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceRight))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Left))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceLeft))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
                             }
 
                             //move piece down faster
-                            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                            if (inputHandler.isKeyDown((int)gameActions.movePieceDownFaster))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
                             }
 
                             //rotate piece
-                            if (runOnKeyDown(Keys.I))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceAwayFromCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.J))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceCounterClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, 1));
                             }
-                            if (runOnKeyDown(Keys.K))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceTowardsCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(-1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.L))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, -1));
                             }
@@ -923,14 +1003,14 @@ namespace ThreeDTetris
                             board1 = new BoardClass.Board(6, 20, 6, _graphics.GraphicsDevice, piecesPresets, player1Camera);
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
-                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle, startDistance);
+                            player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle, startDistance);
                             mainMenuPosition = player1Camera.position - Vector3.Normalize(player1Camera.position) * 400;
                         }
                         else
                         {
                             if (player1Camera.distanceAnimation.done == true)
                             {
-                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle;
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle;
                                 player1Camera.distanceAnimation = null;
                                 board1.startAnimation = true;
                                 board1.zoomInAnimation = false;
@@ -944,19 +1024,19 @@ namespace ThreeDTetris
                     if(board1.enabled == true)
                     {
                         //key inputs to manipulate camera
-                        if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraUp))
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (runOnKeyDown(Keys.D) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraRight) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, -MathHelper.PiOver2, 0);
                         }
-                        if (runOnKeyDown(Keys.A) && camera1Animation == null)
+                        if (inputHandler.runOnKeyDown((int)gameActions.moveCameraLeft) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, MathHelper.PiOver2, 0);
                         }
@@ -975,52 +1055,51 @@ namespace ThreeDTetris
                         if (board1.selectedPiece != null)
                         {
                             //translate piece
-                            if (runOnKeyDown(Keys.Up))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceForward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Forward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Down))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceBackward))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Backward, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Right))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceRight))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Right, secondsAfterLastFrame);
                             }
 
-                            if (runOnKeyDown(Keys.Left))
+                            if (inputHandler.runOnKeyDown((int)gameActions.translatePieceLeft))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Left, secondsAfterLastFrame);
                             }
 
                             //move piece down faster
-                            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                            if (inputHandler.isKeyDown((int)gameActions.movePieceDownFaster))
                             {
                                 board1.moveSelectedPieceRelativeToCamera(Vector3.Down * secondsAfterLastFrame * 30f, secondsAfterLastFrame);
                             }
 
                             //rotate piece
-                            if (runOnKeyDown(Keys.I))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceAwayFromCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.J))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceCounterClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, 1));
                             }
-                            if (runOnKeyDown(Keys.K))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceTowardsCamera))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(-1, 0, 0));
                             }
-                            if (runOnKeyDown(Keys.L))
+                            if (inputHandler.runOnKeyDown((int)gameActions.rotatePieceClockwise))
                             {
                                 board1.rotateSelectedPieceRelativeToCamera(new Vector3(0, 0, -1));
                             }
 
                         }
-
 
                         //increment the time since last piece
                         newPieceTimeCounter += secondsAfterLastFrame;
