@@ -90,6 +90,7 @@ namespace ThreeDTetris
             rotatePieceTowardsCamera,
 
             movePieceDownFaster,
+            dropPieceImmediately,
 
             //menu actions
             menuSelectionDown,
@@ -121,6 +122,7 @@ namespace ThreeDTetris
             {(int)gameActions.rotatePieceTowardsCamera, "rotate piece towards from camera"},
             
             {(int)gameActions.movePieceDownFaster, "move piece down faster"},
+            {(int)gameActions.dropPieceImmediately, "drop piece immediately"},
             
             {(int)gameActions.menuSelectionDown, "menu selection down"},
             {(int)gameActions.menuSelectionUp, "menu selection up"},
@@ -151,6 +153,7 @@ namespace ThreeDTetris
             {"rotate piece towards from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.K})},
             
             {"move piece down faster", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B1 )}, new Keys?[]{Keys.Space})},
+            {"drop piece immediately", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B2 )}, new Keys?[]{Keys.M})},
             
             {"menu selection down", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown )}, new Keys?[]{Keys.Down})},
             {"menu selection up", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp )}, new Keys?[]{Keys.Up})},
@@ -349,7 +352,7 @@ namespace ThreeDTetris
 
             // Set window size if running debug (in release it will be fullscreen)
             #region
-#if false // DEBUG
+#if DEBUG
 			_graphics.PreferredBackBufferWidth = 594; //594 on framework 16    devcade monitor is 9 wide by 21 tall or an aspect ration of 9/21
 			_graphics.PreferredBackBufferHeight = 1386; //1386 on framework 16 
 			_graphics.ApplyChanges();

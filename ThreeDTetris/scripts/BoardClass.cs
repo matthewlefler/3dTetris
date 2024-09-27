@@ -102,7 +102,7 @@ namespace BoardClass
                 longestSide = width;
             }
 
-            boardDistanceFromMiddle = (((-c + 1f) * longestSide) / 10f) + c;
+            boardDistanceFromMiddle = 2 * longestSide + 70f;
 
             _graphicsDevice = graphicsDevice;
             this.camera = camera;
@@ -232,6 +232,40 @@ namespace BoardClass
             }
         }
 
+        private void drop()
+        {
+            if (selectedPiece.grounded == false)   
+            {
+                List<Vector3> orignialPositions = new List<Vector3>();
+                List<Vector3> newPositions = new List<Vector3>();
+                foreach (Cube cube in selectedPiece.cubes)
+                {
+                    orignialPositions.Add(cube.position);
+                    newPositions.Add(Vector3.Floor(cube.position));
+                }
+
+                int count = 0;
+                while (selectedPiece.isMoveLegal(orignialPositions, newPositions) == 1)
+                {
+                    for (int i = 0; i < newPositions.Count; i++)
+                    {
+                        newPositions[i] -= new Vector3(0, 1f, 0);
+                    }
+
+                    count++;
+                    if(count > height*2)
+                    {
+                        break;
+                    }
+                }
+
+                if(newPositions.Count > 0)
+                {
+                    selectedPiece.moveWithoutChecks(new Vector3(0, newPositions[0].Y - orignialPositions[0].Y + 1f, 0));
+                }
+            }
+        }
+
         /// <summary>
         /// Checks then clears the tetris board lines if they are full
         /// </summary>
@@ -309,14 +343,13 @@ namespace BoardClass
 
             this.piecesPresetCounter = 0;
             
-            const float c = 0.5f;
             float longestSide = depth;
             if(width > depth)
             {
                 longestSide = width;
             }
 
-            boardDistanceFromMiddle = 1;
+            boardDistanceFromMiddle = 3f * longestSide + 70f;
 
             float cameraHeight = camera.cameraHeight;
 

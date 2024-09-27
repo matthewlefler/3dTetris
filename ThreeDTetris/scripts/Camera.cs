@@ -49,7 +49,7 @@ namespace CameraClass
                 shortestWindowLength = graphics.PreferredBackBufferHeight;
             }
 
-            _finalDistanceFromMiddle = shortestWindowLength/40f;
+            _finalDistanceFromMiddle = 1f;
         }
 
         public void move(float x, float y)
