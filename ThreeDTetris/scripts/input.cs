@@ -37,7 +37,8 @@ namespace input
         public bool runOnKeyDown(int key)
         {
             inputKey inputKey = gameKeys[actionToKeyString[key]];
-            
+
+            bool DevcadeBool = true;
             foreach((int playerNum, Devcade.Input.ArcadeButtons? key) button in inputKey.devcadeKeys)
             {   
                 if(button.key == null)
@@ -48,11 +49,11 @@ namespace input
                 //if the key is somehow null at this point it is defaulted to the menu button
                 if(!Input.GetButton(button.playerNum, button.key ?? Input.ArcadeButtons.Menu))
                 {
-                    keyList.Remove(inputKey);
-                    return false;
+                    DevcadeBool = false;
                 }
             }
 
+            bool keyboardBool = true;
             foreach(Keys? button in inputKey.keyboardKeys)
             {
                 if(button == null)
@@ -63,9 +64,14 @@ namespace input
                 //if the button is somehow null at this point it is defaulted to the enter button
                 if(!Keyboard.GetState().IsKeyDown(button ?? Keys.Enter))
                 {
-                    keyList.Remove(inputKey);
-                    return false;
+                    keyboardBool = false;
                 }
+            }
+
+            if(!(DevcadeBool || keyboardBool))
+            {
+                keyList.Remove(inputKey);
+                return false;
             }
 
             if(!keyList.Contains(inputKey)) 
@@ -73,29 +79,36 @@ namespace input
                 keyList.Add(inputKey);
                 return true;
             }
-            
+
             return false;
         }
         public bool isKeyDown(int key)
         {
             inputKey inputKey = gameKeys[actionToKeyString[key]];
             
+            bool DevcadeBool = true;
             foreach((int playerNum, Devcade.Input.ArcadeButtons key) button in inputKey.devcadeKeys)
             {
                 if(!Input.GetButton(button.playerNum, button.key))
                 {
-                    return false;
+                    DevcadeBool = false;
                 }
             }
 
+            bool keyboardBool = true;
             foreach(Keys button in inputKey.keyboardKeys)
             {
                 if(!Keyboard.GetState().IsKeyDown(button))
                 {
-                    return false;
+                    keyboardBool = false;
                 }
             }
             
+            if(!(DevcadeBool || keyboardBool))
+            {
+                return false;
+            }
+
             return true;
         }  
     }

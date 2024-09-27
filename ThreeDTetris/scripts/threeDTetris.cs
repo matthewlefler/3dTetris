@@ -642,7 +642,7 @@ namespace ThreeDTetris
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
@@ -861,7 +861,7 @@ namespace ThreeDTetris
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
@@ -1028,7 +1028,7 @@ namespace ThreeDTetris
                         {
                             player1Camera.move(0, player1Camera.speed * secondsAfterLastFrame);
                         }
-                        if (inputHandler.isKeyDown((int)gameActions.menuSelectionDown))
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraDown))
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
