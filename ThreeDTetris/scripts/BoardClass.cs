@@ -94,8 +94,7 @@ namespace BoardClass
             this.width = width;
             this.height = height;
             this.depth = depth;
-
-            const float c = 0.5f;
+            
             float longestSide = depth;
             if(width > depth)
             {
@@ -350,8 +349,6 @@ namespace BoardClass
             }
 
             boardDistanceFromMiddle = 3f * longestSide + 70f;
-
-            float cameraHeight = camera.cameraHeight;
 
             calcVaribleBoardValues();
 

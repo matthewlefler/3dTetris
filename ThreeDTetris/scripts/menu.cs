@@ -15,21 +15,26 @@ namespace MenuClass
     {
         Menu,
         Pause,
-        SoloCustom,
-        SoloStandard,
-        SoloThreeD,
-        OneVersesOneStandard,
-        TwoVersesTwoThreeD,
+        Play,
         PlayerOneWon,
         PlayerTwoWon,
         Lost,
         Quit
     }
 
+    public enum gameModes
+    {
+        SoloCustom,
+        SoloStandard,
+        SoloThreeD,
+        OneVersesOneStandard,
+        TwoVersesTwoThreeD,
+    }
+
     public class Menu
     {
         internal GraphicsDevice _graphicsDevice;
-        internal SpriteFont _font;
+
         internal Rectangle _windowSize;
 
         internal int selectedOption;
@@ -43,13 +48,12 @@ namespace MenuClass
         //menu elements and corresponding menus
         internal List<string> MenuItems = new List<string>();
         internal Dictionary<string, Menu> menuItemsToStates = new Dictionary<string, Menu>();
-        internal Dictionary<string, gameStates> menuItemstoGameState = new Dictionary<string, gameStates>();
+        internal Dictionary<string, int[]> menuItemstoGameStates = new Dictionary<string, int[]>();
 
-        public Menu(GraphicsDevice graphicsDevice, SpriteFont font, Rectangle windowSize)
+        public Menu(GraphicsDevice graphicsDevice, Rectangle windowSize)
         {
             selectedOption = 0;
             _graphicsDevice = graphicsDevice;
-            _font = font;
             _windowSize = windowSize;
         }
 
@@ -81,17 +85,31 @@ namespace MenuClass
             }
         }
 
-        public void add(string name, Menu menu, gameStates state)
+        public void add(string name, Menu menu, int[] states) //cast to int
         {
             MenuItems.Add(name);
             menuItemsToStates.Add(name, menu);
-            menuItemstoGameState.Add(name, state);
+            menuItemstoGameStates.Add(name, states);
+        }
+
+        public void add(string name, Menu menu, int state) //cast to int
+        {
+            MenuItems.Add(name);
+            menuItemsToStates.Add(name, menu);
+            menuItemstoGameStates.Add(name, new int[] {state});
+        }
+
+        public void add(string name, Menu menu, int state, int state2) //cast to int
+        {
+            MenuItems.Add(name);
+            menuItemsToStates.Add(name, menu);
+            menuItemstoGameStates.Add(name, new int[] {state, state2});
         }
 
         //return the currently selected Menu
-        public virtual Menu selectOption(out gameStates gameState)
+        public virtual Menu selectOption(out int[] gameState)
         {
-            gameState = menuItemstoGameState[MenuItems[selectedOption]];
+            gameState = menuItemstoGameStates[MenuItems[selectedOption]];
 
             return menuItemsToStates[MenuItems[selectedOption]];
         }
@@ -113,63 +131,6 @@ namespace MenuClass
             {
                 selectedOption = MenuItems.Count - 1;
             }
-        }
-    }
-
-
-    public class MainMenu : Menu
-    {
-        public MainMenu(GraphicsDevice graphicDevice, SpriteFont font, Rectangle windowSize) : base(graphicDevice, font, windowSize)
-        {
-            selectedOption = 0;
-
-            _graphicsDevice = graphicDevice;
-            _font = font;
-
-            _windowSize = windowSize;
-
-            spriteBatch = new SpriteBatch(graphicDevice);
-
-            textSize = 3;
-
-            _effect = new SpriteEffects();
-        }
-    }
-
-    public class SettingsMenu : Menu
-    {
-
-        public SettingsMenu(GraphicsDevice graphicDevice, SpriteFont font, Rectangle windowSize) : base(graphicDevice, font, windowSize)
-        {
-            selectedOption = 0;
-
-            _graphicsDevice = graphicDevice;
-            _font = font;
-            _windowSize = windowSize;
-
-            spriteBatch = new SpriteBatch(graphicDevice);
-
-            textSize = 3;
-
-            _effect = new SpriteEffects();
-        }
-    }
-
-    public class BoardSizeMenu : Menu
-    {
-        public BoardSizeMenu(GraphicsDevice graphicDevice, SpriteFont font, Rectangle windowSize) : base(graphicDevice, font, windowSize)
-        {
-            selectedOption = 0;
-
-            _graphicsDevice = graphicDevice;
-            _font = font;
-            _windowSize = windowSize;
-
-            spriteBatch = new SpriteBatch(graphicDevice);
-
-            textSize = 3;
-
-            _effect = new SpriteEffects();
         }
     }
 
@@ -197,12 +158,11 @@ namespace MenuClass
         private Menu parentMenu;
         private int changeAmount;
 
-        public IntValueMenu(GraphicsDevice graphicDevice, SpriteFont font, Rectangle windowSize, Integer Value, int changeAmount, Menu parentMenu) : base(graphicDevice, font, windowSize)
+        public IntValueMenu(GraphicsDevice graphicDevice, Rectangle windowSize, Integer Value, int changeAmount, Menu parentMenu) : base(graphicDevice, windowSize)
         {
             selectedOption = 0;
 
             _graphicsDevice = graphicDevice;
-            _font = font;
             _windowSize = windowSize;
 
             spriteBatch = new SpriteBatch(graphicDevice);
@@ -231,9 +191,9 @@ namespace MenuClass
             MenuItems[0] = integer.Value.ToString();
         }
 
-        public override Menu selectOption(out gameStates gameState)
+        public override Menu selectOption(out int[] gameState)
         {
-            gameState = gameStates.Menu;
+            gameState = new int[]{ (int) gameStates.Menu };
 
             return parentMenu;
         }

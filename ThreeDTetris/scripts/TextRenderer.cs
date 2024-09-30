@@ -13,9 +13,6 @@ namespace TextRenderer
 {
     class Letter
     {
-        float scale = 1f;
-
-        public Vector3[] vertices;
         VertexPositionColorNormalTexture[] quads;
         List<VertexPositionColorNormalTexture> vertList = new();
 
