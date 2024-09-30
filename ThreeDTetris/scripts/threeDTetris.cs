@@ -39,6 +39,7 @@ namespace ThreeDTetris
         //Menus
         private Menu _mainMenu;
         private Menu _pauseMenu;
+        private Menu _continueMenu;
         private Menu selectedMenu;
 
         private static gameStates gameState = new gameStates();
@@ -416,6 +417,8 @@ namespace ThreeDTetris
 
             _pauseMenu = new Menu(_graphics.GraphicsDevice, windowSize);
 
+            _continueMenu = new Menu(_graphics.GraphicsDevice, windowSize);
+
             Menu playMenu = new Menu(_graphics.GraphicsDevice, windowSize);
             
             Menu settingsMenu = new Menu(_graphics.GraphicsDevice, windowSize);
@@ -456,10 +459,9 @@ namespace ThreeDTetris
                 board1.depth = value;
             }
 
-
-
             Integer boardDepthValue = new Integer(new Func<int>(getBoardDepth), new Action<int>(setBoardDepth));
 
+            //main menu
             IntValueMenu boardWidth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardWidthValue, 2, settingsMenu);
             IntValueMenu boardHeight = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardHeightValue, 1, settingsMenu);
             IntValueMenu boardDepth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardDepthValue, 2, settingsMenu);
@@ -481,10 +483,28 @@ namespace ThreeDTetris
             _mainMenu.add("Settings", settingsMenu, (int)gameStates.Menu);
             _mainMenu.add("Quit", settingsMenu, (int)gameStates.Quit);
 
-            _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
-            _pauseMenu.add("Settings", settingsMenu, (int)gameStates.Menu);
-            _pauseMenu.add("Main Menu", _mainMenu, (int)gameStates.Menu);
+            //pause menu            
+            Menu pauseBoardSizeMenu = new Menu(_graphics.GraphicsDevice, windowSize);
+            Menu pauseSettingsMenu = new Menu(_graphics.GraphicsDevice, windowSize);
 
+            IntValueMenu pauseBoardWidth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardWidthValue, 2, pauseSettingsMenu);
+            IntValueMenu pauseBoardHeight = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardHeightValue, 1, pauseSettingsMenu);
+            IntValueMenu pauseBoardDepth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardDepthValue, 2, pauseSettingsMenu);
+            
+            pauseBoardSizeMenu.add("Width", pauseBoardWidth, (int)gameStates.Pause);
+            pauseBoardSizeMenu.add("Depth", pauseBoardDepth, (int)gameStates.Pause);
+            pauseBoardSizeMenu.add("Height", pauseBoardHeight, (int)gameStates.Pause);
+            pauseBoardSizeMenu.add("Back", pauseSettingsMenu, (int)gameStates.Pause);
+
+            pauseSettingsMenu.add("Board Size", pauseBoardSizeMenu, (int)gameStates.Pause);
+            pauseSettingsMenu.add("Back", _pauseMenu, (int)gameStates.Pause);
+            
+            _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
+            _pauseMenu.add("Settings", pauseSettingsMenu, (int)gameStates.Pause);
+            _pauseMenu.add("Main Menu", _mainMenu, (int)gameStates.Menu);
+            
+            _continueMenu.add("Restart?", _continueMenu, (int)gameStates.Play);
+            _continueMenu.add("Main Menu?", _mainMenu, (int)gameStates.Menu);
 
             selectedMenu = _mainMenu;
 
@@ -555,7 +575,34 @@ namespace ThreeDTetris
 
 
                 case gameStates.Pause:
+                    if(inputHandler.runOnKeyDown((int)gameActions.pause))
+                    {
+                        gameState = gameStates.Play;
+                    }
+                    
+                    if (inputHandler.runOnKeyDown((int)gameActions.menuSelectionUp))
+                    {
+                        selectedMenu.ChangeSelectedOptionUp();
+                    }
+                    if (inputHandler.runOnKeyDown((int)gameActions.menuSelectionDown))
+                    {
+                        selectedMenu.ChangeSelectedOptionDown();
+                    }
 
+                    if (inputHandler.runOnKeyDown((int)gameActions.selectMenuSelection))
+                    {
+                        selectedMenu = selectedMenu.selectOption(out int[] states);
+                        if(states.Length == 1)
+                        {
+                            gameState = (gameStates)states[0]; //cast from int back to gamestate
+                        }
+                        else if(states.Length == 2) 
+                        {
+                            gameState = (gameStates)states[0]; //cast from int back to gamestate
+                            gameMode = (gameModes)states[1];
+                        }
+
+                    }
 
                     break;
 
@@ -580,6 +627,11 @@ namespace ThreeDTetris
 
 
                 case gameStates.Play:
+                    if(inputHandler.runOnKeyDown((int)gameActions.pause))
+                    {
+                        gameState = gameStates.Pause;
+                        selectedMenu = _pauseMenu;
+                    }
                     
                     //anim to zoom in from menu position
                     if (board1.zoomInAnimation == true)
@@ -604,7 +656,7 @@ namespace ThreeDTetris
                                     board1 = new BoardClass.Board(10, 20, 10, _graphics.GraphicsDevice, piecesPresets, player1Camera);
                                     break;
                             }
-                            board1.reset(); // change based on gamemode ------------------------------------------------------------------------------------------
+
                             float startDistance = 10000;
                             player1Camera.distanceFromMiddle = startDistance;
                             player1Camera.distanceAnimation = new AnimationFloat(startDistance, player1Camera._finalDistanceFromMiddle * board1.boardDistanceFromMiddle, startDistance);
@@ -840,6 +892,8 @@ namespace ThreeDTetris
 
             basicEffect.TextureEnabled = true;
 
+            basicEffect.FogEnabled = false;
+
             //matrices
             basicEffect.View = player1Camera.viewMatrix;
             basicEffect.Projection = player1Camera.projectionMatrix;
@@ -847,7 +901,7 @@ namespace ThreeDTetris
             switch (gameState)
             {
                 case gameStates.Menu:
-                    selectedMenu.draw(_fontInterpreter, player1Camera.position);
+                    selectedMenu.draw(_fontInterpreter, player1Camera.position, 1f);
                     break;
 
 
@@ -855,20 +909,27 @@ namespace ThreeDTetris
                 case gameStates.Pause:
                     basicEffect.FogColor = Vector3.Zero;
 
-                    basicEffect.FogStart = 0f;
-                    basicEffect.FogEnd = 100f;
+                    basicEffect.FogStart = player1Camera._finalDistanceFromMiddle - 20f;
+                    basicEffect.FogEnd = 140f;
 
                     basicEffect.FogEnabled = true;
 
                     board1.draw(basicEffect);
+                    selectedMenu.draw(_fontInterpreter, player1Camera.position, 1f);
                     break;
 
 
 
                 case gameStates.Lost:
+                    basicEffect.FogColor = Vector3.Zero;
+
+                    basicEffect.FogStart = player1Camera._finalDistanceFromMiddle - 20f;
+                    basicEffect.FogEnd = 140f;
+
+                    basicEffect.FogEnabled = true;
                     board1.draw(basicEffect);
-                    string continueText = "continue?";
-                    _fontInterpreter.menuDrawStringInWorld("continue?", 10f * player1Camera.position, 1000, 0.1f, Vector3.Zero, Vector3.One, continueText.Length + 1);
+                    _continueMenu.draw(_fontInterpreter, player1Camera.position, 1f);
+
                     break;
 
                 
@@ -876,7 +937,7 @@ namespace ThreeDTetris
                 case gameStates.Play:
                     if(board1.zoomInAnimation == true)
                     {
-                        selectedMenu.draw(_fontInterpreter, mainMenuPosition);
+                        selectedMenu.draw(_fontInterpreter, mainMenuPosition, 1f);
                     }
                     if (board1.startAnimation)
                     {

@@ -58,7 +58,7 @@ namespace MenuClass
         }
 
         //draws the text in MainMenuItems verticaly
-        public void draw(FontInterpreter fontInterpreter, Vector3 position)
+        public void draw(FontInterpreter fontInterpreter, Vector3 position, float scale)
         {
             string selectedCharacters = ">";
             int highestItemLength = 0;
@@ -76,11 +76,11 @@ namespace MenuClass
 
                 if (i == selectedOption)
                 {
-                    fontInterpreter.menuDrawStringInWorld(selectedCharacters + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, 1f, Vector3.Zero, Vector3.One, highestItemLength);
+                    fontInterpreter.menuDrawStringInWorld(selectedCharacters + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, scale, Vector3.Zero, Vector3.One, highestItemLength);
                 }
                 else
                 {
-                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, 1f, Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f), highestItemLength);
+                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), 100, scale,  Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f), highestItemLength);
                 }
             }
         }
