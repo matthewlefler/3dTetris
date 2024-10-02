@@ -208,7 +208,13 @@ namespace BoardClass
                 if(newPositions.Count > 0)
                 {
                     selectedPiece.blockSize = 0.8f;
+                    cubeEffect.Parameters["Alpha"].SetValue(0.2f); 
+                    cubeEffect.Parameters["Brightness"].SetValue(0.7f); 
+
                     selectedPiece.DrawMatrixAfter(cubeEffect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
+
+                    cubeEffect.Parameters["Brightness"].SetValue(1.0f); 
+                    cubeEffect.Parameters["Alpha"].SetValue(1.0f); 
                     selectedPiece.blockSize = 1f;
                 }
             }

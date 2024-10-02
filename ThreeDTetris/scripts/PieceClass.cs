@@ -139,7 +139,7 @@ namespace PieceClass
             foreach (Cube cube in cubes)
             {
                 effect.Parameters["WorldMatrix"].SetValue(cube.worldMatrix);
-                effect.Parameters["Texture"].SetValue(cubeTexture);
+                effect.Parameters["Texture2d"].SetValue(cubeTexture);
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
@@ -160,7 +160,7 @@ namespace PieceClass
             foreach (Cube cube in cubes)
             {
                 effect.Parameters["WorldMatrix"].SetValue(cube.worldMatrix * matrix);
-                effect.Parameters["Texture"].SetValue(cubeTexture);
+                effect.Parameters["Texture2d"].SetValue(cubeTexture);
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
@@ -181,7 +181,7 @@ namespace PieceClass
             foreach (Cube cube in cubes)
             {
                 effect.Parameters["WorldMatrix"].SetValue(matrix * cube.worldMatrix);
-                effect.Parameters["Texture"].SetValue(cubeTexture);
+                effect.Parameters["Texture2d"].SetValue(cubeTexture);
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {

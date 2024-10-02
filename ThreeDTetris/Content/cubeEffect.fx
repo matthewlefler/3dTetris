@@ -11,14 +11,17 @@ float4x4 WorldMatrix;
 float4x4 ViewMatrix;
 float4x4 ProjectionMatrix;
 
-Texture2D Texture;
+float Alpha;
+float Brightness;
+
+Texture2D Texture2d;
 
 sampler2D TextureSampler = sampler_state {
-    Texture = <Texture>;
+    Texture = (Texture2d);
     MagFilter = Linear;
     MinFilter = Linear;
-    AddressU = Clamp;
-    AddressV = Clamp;
+    AddressU = Wrap;
+    AddressV = Wrap;
 };
 
 struct VertexShaderInput
@@ -53,7 +56,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
     float4 VertexTextureColor = tex2D(TextureSampler, input.TextureCoordinate);
 
-	return saturate(VertexTextureColor * input.Color + float4(0.8f, 0.8f, 0.8f, 1.0f));
+    float4 color = saturate(VertexTextureColor * input.Color);
+    color.a = Alpha;
+
+	return color * Brightness;
 }
 
 technique BasicColorDrawing

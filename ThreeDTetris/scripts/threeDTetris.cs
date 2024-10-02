@@ -888,7 +888,7 @@ namespace ThreeDTetris
             GraphicsDevice.Clear(backgroundColor);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             // Batches all the draw calls for this frame, and then performs them all at once
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             // TODO: Add your drawing code here
 
             basicEffect.VertexColorEnabled = true;
@@ -902,6 +902,11 @@ namespace ThreeDTetris
             //matrices
             basicEffect.View = player1Camera.viewMatrix;
             basicEffect.Projection = player1Camera.projectionMatrix;
+
+            _cubeEffect.Parameters["ViewMatrix"].SetValue(player1Camera.viewMatrix);
+            _cubeEffect.Parameters["ProjectionMatrix"].SetValue(player1Camera.projectionMatrix); 
+            _cubeEffect.Parameters["Alpha"].SetValue(1.0f); 
+            _cubeEffect.Parameters["Brightness"].SetValue(1.0f); 
 
             switch (gameState)
             {

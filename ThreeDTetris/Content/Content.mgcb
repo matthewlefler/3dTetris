@@ -57,6 +57,12 @@
 /processorParam:TextureFormat=Compressed
 /build:hollowCube.fbx
 
+#begin reference.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:reference.fx
+
 #begin upHeaval.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
