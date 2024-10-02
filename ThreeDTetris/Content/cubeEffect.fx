@@ -7,6 +7,8 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
+#include "BloomCrossPlatform.fx"
+
 float4x4 WorldMatrix;
 float4x4 ViewMatrix;
 float4x4 ProjectionMatrix;
@@ -24,23 +26,23 @@ sampler2D TextureSampler = sampler_state {
     AddressV = Wrap;
 };
 
-struct VertexShaderInput
+struct CubeVertexShaderInput
 {
 	float4 Position : POSITION0;
 	float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD0;
 };
 
-struct VertexShaderOutput
+struct CubeVertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
+CubeVertexShaderOutput MainVS(in CubeVertexShaderInput input)
 {
-	VertexShaderOutput output = (VertexShaderOutput)0;
+	CubeVertexShaderOutput output = (CubeVertexShaderOutput)0;
 
 	float4 worldPosition = mul(input.Position, WorldMatrix);
     float4 viewPosition = mul(worldPosition, ViewMatrix);
@@ -52,7 +54,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 MainPS(CubeVertexShaderOutput input) : COLOR
 {
     float4 VertexTextureColor = tex2D(TextureSampler, input.TextureCoordinate);
 

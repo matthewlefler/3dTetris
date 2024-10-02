@@ -34,6 +34,7 @@ namespace ThreeDTetris
         private SpriteBatch _spriteBatch;
         //effects
         private Effect _cubeEffect;
+        private Effect _bloomEffect;
 
 
         private SpriteFont _font;
@@ -337,8 +338,8 @@ namespace ThreeDTetris
             player1Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
             player2Camera = new OrbitCamera(new Vector2((1f/2f) * MathF.PI, 0), _graphics, 10f);
 
-            board1 = new BoardClass.Board(10, 20, 10, _graphics.GraphicsDevice, piecesPresets, player1Camera);
-            board2 = new BoardClass.Board(10, 20, 10, _graphics.GraphicsDevice, piecesPresets, player2Camera);
+            board1 = new BoardClass.Board(5, 20, 5, _graphics.GraphicsDevice, piecesPresets, player1Camera);
+            board2 = new BoardClass.Board(5, 20, 5, _graphics.GraphicsDevice, piecesPresets, player2Camera);
 
             gameState = gameStates.Menu;
 
@@ -355,7 +356,7 @@ namespace ThreeDTetris
             Input.Initialize();
             //Persistence.Init(); Uncomment if using the persistence section for save and load
 
-            
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef; 
 
             // Set window size if running debug (in release it will be fullscreen)
             #region
@@ -413,6 +414,7 @@ namespace ThreeDTetris
             cubeModel = Content.Load<Model>("Cube");
 
             _cubeEffect = Content.Load<Effect>("cubeEffect");
+            _bloomEffect = Content.Load<Effect>("BloomCrossPlatform");
 
             /// <summary>
             /// this is the menu structure; 

@@ -140,7 +140,7 @@ namespace PieceClass
             {
                 effect.Parameters["WorldMatrix"].SetValue(cube.worldMatrix);
                 effect.Parameters["Texture2d"].SetValue(cubeTexture);
-
+                
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();

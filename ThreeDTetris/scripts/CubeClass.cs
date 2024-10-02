@@ -110,11 +110,14 @@ namespace CubeClass
             vertexBuffer.SetData(colorVertList);
             _graphicsDevice.SetVertexBuffer(vertexBuffer);
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            foreach(EffectTechnique technique in effect.Techniques)
             {
-                pass.Apply();
+                foreach (EffectPass pass in technique.Passes)
+                {
+                    pass.Apply();
 
-                _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, colorVertList.Length / 2);
+                    _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, colorVertList.Length / 2);
+                }
             }
 
         }
