@@ -104,13 +104,13 @@ namespace CubeClass
             }
         }
 
-        public void draw(BasicEffect basicEffect)
+        public void draw(Effect effect)
         {
             VertexBuffer vertexBuffer = new VertexBuffer(_graphicsDevice, VertexPositionColorNormalTexture.VertexDeclaration, colorVertList.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData(colorVertList);
             _graphicsDevice.SetVertexBuffer(vertexBuffer);
 
-            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 

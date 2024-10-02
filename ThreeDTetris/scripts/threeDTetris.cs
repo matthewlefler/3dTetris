@@ -32,6 +32,9 @@ namespace ThreeDTetris
 
         private static GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        //effects
+        private Effect _cubeEffect;
+
 
         private SpriteFont _font;
         private static Color backgroundColor = Color.Black;
@@ -408,6 +411,8 @@ namespace ThreeDTetris
             //Content to load your game content here:
             _font = Content.Load<SpriteFont>("upHeaval");
             cubeModel = Content.Load<Model>("Cube");
+
+            _cubeEffect = Content.Load<Effect>("cubeEffect");
 
             /// <summary>
             /// this is the menu structure; 
@@ -883,7 +888,7 @@ namespace ThreeDTetris
             GraphicsDevice.Clear(backgroundColor);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             // Batches all the draw calls for this frame, and then performs them all at once
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             // TODO: Add your drawing code here
 
             basicEffect.VertexColorEnabled = true;
@@ -914,7 +919,7 @@ namespace ThreeDTetris
 
                     basicEffect.FogEnabled = true;
 
-                    board1.draw(basicEffect);
+                    board1.draw(basicEffect, _cubeEffect);
                     selectedMenu.draw(_fontInterpreter, player1Camera.position, 1f);
                     break;
 
@@ -927,7 +932,7 @@ namespace ThreeDTetris
                     basicEffect.FogEnd = 140f;
 
                     basicEffect.FogEnabled = true;
-                    board1.draw(basicEffect);
+                    board1.draw(basicEffect, _cubeEffect);
                     _continueMenu.draw(_fontInterpreter, player1Camera.position, 1f);
 
                     break;
@@ -943,7 +948,7 @@ namespace ThreeDTetris
                     {
                         _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
-                    board1.draw(basicEffect);
+                    board1.draw(basicEffect, _cubeEffect);
                     _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(_graphics.PreferredBackBufferWidth/200, 8), 660, 1000, scale: 0.05f, Vector3.Zero, Vector3.One);
                     break;
 

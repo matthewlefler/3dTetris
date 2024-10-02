@@ -163,17 +163,17 @@ namespace BoardClass
             lines[15] = new VertexPositionColor(new Vector3(-width / 2f, height - cameraHeight, depth / 2f), color);
         }
 
-        public void draw(BasicEffect effect)
+        public void draw(BasicEffect effect, Effect cubeEffect)
         {
 
             foreach (Piece piece in pieceList)
             {
-                piece.Draw(effect);
+                piece.Draw(cubeEffect);
             }
 
             foreach (Piece piece in nextPieces)
             {
-                piece.DrawMatrixAfter(effect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
+                piece.DrawMatrixAfter(cubeEffect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
             }
 
             if (selectedPiece != null && selectedPiece.grounded == false)   
@@ -208,7 +208,7 @@ namespace BoardClass
                 if(newPositions.Count > 0)
                 {
                     selectedPiece.blockSize = 0.8f;
-                    selectedPiece.DrawMatrixAfter(effect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
+                    selectedPiece.DrawMatrixAfter(cubeEffect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
                     selectedPiece.blockSize = 1f;
                 }
             }

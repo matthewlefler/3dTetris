@@ -32,6 +32,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Cube.fbx
 
+#begin cubeEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:cubeEffect.fx
+
 #begin hollowCube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
