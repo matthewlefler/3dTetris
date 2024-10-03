@@ -410,7 +410,7 @@ namespace ThreeDTetris
 
             //Content to load your game content here:
             _font = Content.Load<SpriteFont>("upHeaval");
-            
+
             /// <summary>
             /// this is the menu structure; 
             /// has to be in LoadContent due to font requirement;
@@ -973,9 +973,7 @@ namespace ThreeDTetris
 
 
             }
-
-            //DrawModel(cubeModel, world, viewMatrix, projectionMatrix);                                                //draw test 3d model
-
+            
             //Cube center = new Cube(Vector3.Zero, Color.White, 0.4f);                                                  //draw white sphere at origin
             //center.draw(GraphicsDevice);
             //_spriteBatch.Draw(_font.Texture, Vector2.Zero, Color.White);                                              //draw font texture

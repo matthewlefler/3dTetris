@@ -140,16 +140,6 @@ namespace PieceClass
             {
                 effect.World = cube.worldMatrix;
                 effect.Texture = cubeTexture;
-                
-                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-
-                    VertexPositionColor point = new VertexPositionColor(rotationPoint, Color.White);
-                    VertexPositionColor[] points = new VertexPositionColor[] { point };
-
-                    _graphicsDevice.DrawUserPrimitives(PrimitiveType.PointList, points, 0, 1);
-                }
 
                 cube.draw(effect);
             }
@@ -162,16 +152,6 @@ namespace PieceClass
                 effect.World = cube.worldMatrix * matrix;
                 effect.Texture = cubeTexture;
 
-                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-
-                    VertexPositionColor point = new VertexPositionColor(rotationPoint, Color.White);
-                    VertexPositionColor[] points = new VertexPositionColor[] { point };
-
-                    _graphicsDevice.DrawUserPrimitives(PrimitiveType.PointList, points, 0, 1);
-                }
-
                 cube.draw(effect);
             }
         }
@@ -182,16 +162,6 @@ namespace PieceClass
             {
                 effect.World = matrix * cube.worldMatrix;
                 effect.Texture = cubeTexture;
-
-                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-
-                    VertexPositionColor point = new VertexPositionColor(rotationPoint, Color.White);
-                    VertexPositionColor[] points = new VertexPositionColor[] { point };
-
-                    _graphicsDevice.DrawUserPrimitives(PrimitiveType.PointList, points, 0, 1);
-                }
 
                 cube.draw(effect);
             }
