@@ -1,3 +1,4 @@
+# sh publish.sh -i icon1.png -b converted_image.png -g ./ 
 #!/bin/bash
 
 # Correct dimensions for banner
@@ -63,7 +64,7 @@ function build_game() {
 	# Try building a dotnet app in that directory. The Dotnet SDK should do the rest for us.
 	echo "Building Game. Please be paitent."
 	cd $GAME
-	dotnet ThreeDTetris.sln publish -c Release -r linux-x64 --self-contained
+	dotnet publish ThreeDTetris.sln -c Release -r linux-x64 --self-contained
 	cd ..
 	echo "Build complete."
 }
