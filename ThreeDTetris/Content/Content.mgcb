@@ -13,12 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin BloomCrossPlatform.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:BloomCrossPlatform.fx;bloom.fx
-
 #begin Cube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor

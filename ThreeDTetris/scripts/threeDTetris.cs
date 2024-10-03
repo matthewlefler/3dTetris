@@ -753,9 +753,9 @@ namespace ThreeDTetris
                         if (inputHandler.isKeyDown((int)gameActions.moveCameraOut))
                         {
                             player1Camera.distanceFromMiddle += player1Camera.speed * 20f * secondsAfterLastFrame;
-                            if(player1Camera.distanceFromMiddle > player1Camera._finalDistanceFromMiddle * 10f)
+                            if(player1Camera.distanceFromMiddle > player1Camera._finalDistanceFromMiddle * 1000f)
                             {
-                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * 10f;
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * 1000f;
                             }
                         }
                         if (inputHandler.isKeyDown((int)gameActions.moveCameraIn))
