@@ -212,17 +212,12 @@ namespace BoardClass
                     selectedPiece.blockSize = 1f;
                 }
             }
-
+            
             effect.VertexColorEnabled = true;
 
-            effect.LightingEnabled = true;
-            effect.VertexColorEnabled = true;
+            effect.LightingEnabled = false;
             effect.EmissiveColor = new Vector3(1f, 1f, 1f);
             effect.AmbientLightColor = new Vector3(1f, 1f, 1f);
-
-            effect.DirectionalLight0.Enabled = true;
-            effect.DirectionalLight0.DiffuseColor = new Vector3(0.35f, 0.35f, 0.35f);
-            effect.DirectionalLight0.Direction = Vector3.Left + Vector3.Down + Vector3.Backward;
 
             effect.World = Matrix.CreateTranslation(Vector3.Zero);
 
