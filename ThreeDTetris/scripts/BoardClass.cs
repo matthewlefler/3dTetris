@@ -201,14 +201,10 @@ namespace BoardClass
                     }
                 }
 
-                effect.AmbientLightColor = new Vector3(0.2f, 0.2f, 0.2f);
-                effect.DirectionalLight0.DiffuseColor = Vector3.Zero;
-                effect.EmissiveColor = new Vector3(0.5f, 0.5f, 0.5f);
-
                 if(newPositions.Count > 0)
                 {
                     selectedPiece.blockSize = 0.8f;
-                    effect.EmissiveColor = new Vector3(0.8f,0.8f,0.8f);
+                    effect.EmissiveColor = new Vector3(0.4f,0.4f,0.4f);
 
                     selectedPiece.DrawMatrixAfter(effect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
 
@@ -265,6 +261,7 @@ namespace BoardClass
                 if(newPositions.Count > 0)
                 {
                     selectedPiece.moveWithoutChecks(new Vector3(0, newPositions[0].Y - orignialPositions[0].Y + 1f, 0));
+                    selectedPiece.grounded = true;
                 }
             }
         }
