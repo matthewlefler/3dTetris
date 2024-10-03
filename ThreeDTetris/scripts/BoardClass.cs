@@ -163,17 +163,17 @@ namespace BoardClass
             lines[15] = new VertexPositionColor(new Vector3(-width / 2f, height - cameraHeight, depth / 2f), color);
         }
 
-        public void draw(BasicEffect effect, Effect cubeEffect)
+        public void draw(BasicEffect effect)
         {
 
             foreach (Piece piece in pieceList)
             {
-                piece.Draw(cubeEffect);
+                piece.Draw(effect);
             }
 
             foreach (Piece piece in nextPieces)
             {
-                piece.DrawMatrixAfter(cubeEffect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
+                piece.DrawMatrixAfter(effect, Matrix.CreateFromAxisAngle(Vector3.Up, (MathF.PI - camera.orbitRotations.X) - MathHelper.PiOver2));
             }
 
             if (selectedPiece != null && selectedPiece.grounded == false)   
@@ -208,11 +208,11 @@ namespace BoardClass
                 if(newPositions.Count > 0)
                 {
                     selectedPiece.blockSize = 0.8f;
-                    cubeEffect.Parameters["Brightness"].SetValue(0.8f); 
+                    effect.EmissiveColor = new Vector3(0.8f,0.8f,0.8f);
 
-                    selectedPiece.DrawMatrixAfter(cubeEffect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
+                    selectedPiece.DrawMatrixAfter(effect, Matrix.CreateTranslation(0.1f, newPositions[0].Y - orignialPositions[0].Y + 1f, 0.1f));
 
-                    cubeEffect.Parameters["Brightness"].SetValue(1.0f); 
+                    effect.EmissiveColor = Vector3.One;
                     selectedPiece.blockSize = 1f;
                 }
             }

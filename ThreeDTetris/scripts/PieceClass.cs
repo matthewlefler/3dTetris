@@ -134,12 +134,12 @@ namespace PieceClass
 
         }
 
-        public void Draw(Effect effect)
+        public void Draw(BasicEffect effect)
         {
             foreach (Cube cube in cubes)
             {
-                effect.Parameters["WorldMatrix"].SetValue(cube.worldMatrix);
-                effect.Parameters["Texture2d"].SetValue(cubeTexture);
+                effect.World = cube.worldMatrix;
+                effect.Texture = cubeTexture;
                 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
@@ -155,12 +155,12 @@ namespace PieceClass
             }
         }
 
-        public void DrawMatrixAfter(Effect effect, Matrix matrix)
+        public void DrawMatrixAfter(BasicEffect effect, Matrix matrix)
         {
             foreach (Cube cube in cubes)
             {
-                effect.Parameters["WorldMatrix"].SetValue(cube.worldMatrix * matrix);
-                effect.Parameters["Texture2d"].SetValue(cubeTexture);
+                effect.World = cube.worldMatrix * matrix;
+                effect.Texture = cubeTexture;
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
@@ -176,12 +176,12 @@ namespace PieceClass
             }
         }
 
-        public void DrawMatrixBefore(Effect effect, Matrix matrix)
+        public void DrawMatrixBefore(BasicEffect effect, Matrix matrix)
         {
             foreach (Cube cube in cubes)
             {
-                effect.Parameters["WorldMatrix"].SetValue(matrix * cube.worldMatrix);
-                effect.Parameters["Texture2d"].SetValue(cubeTexture);
+                effect.World = matrix * cube.worldMatrix;
+                effect.Texture = cubeTexture;
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {

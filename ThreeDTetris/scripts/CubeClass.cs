@@ -104,7 +104,7 @@ namespace CubeClass
             }
         }
 
-        public void draw(Effect effect)
+        public void draw(BasicEffect effect)
         {
             VertexBuffer vertexBuffer = new VertexBuffer(_graphicsDevice, VertexPositionColorNormalTexture.VertexDeclaration, colorVertList.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData(colorVertList);

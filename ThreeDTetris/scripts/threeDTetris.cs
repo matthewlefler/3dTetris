@@ -33,9 +33,6 @@ namespace ThreeDTetris
 
         private static GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        //effects
-        private Effect _cubeEffect;
-
 
         private SpriteFont _font;
         private static Color backgroundColor = Color.Black;
@@ -179,7 +176,6 @@ namespace ThreeDTetris
 
         //the models:
         //all 3d models are to be imported in the .fbx format
-        private static Model cubeModel;
 
         //piece cube lists
         static List<Vector3> cube2by2by2Cubes = new List<Vector3>()
@@ -414,9 +410,7 @@ namespace ThreeDTetris
 
             //Content to load your game content here:
             _font = Content.Load<SpriteFont>("upHeaval");
-
-            _cubeEffect = Content.Load<Effect>("cubeEffect");
-
+            
             /// <summary>
             /// this is the menu structure; 
             /// has to be in LoadContent due to font requirement;
@@ -926,11 +920,6 @@ namespace ThreeDTetris
             basicEffect.View = player1Camera.viewMatrix;
             basicEffect.Projection = player1Camera.projectionMatrix;
 
-            _cubeEffect.Parameters["ViewMatrix"].SetValue(player1Camera.viewMatrix);
-            _cubeEffect.Parameters["ProjectionMatrix"].SetValue(player1Camera.projectionMatrix); 
-            _cubeEffect.Parameters["Alpha"].SetValue(1.0f); 
-            _cubeEffect.Parameters["Brightness"].SetValue(1.0f); 
-
             switch (gameState)
             {
                 case gameStates.Menu:
@@ -947,7 +936,7 @@ namespace ThreeDTetris
 
                     basicEffect.FogEnabled = true;
 
-                    board1.draw(basicEffect, _cubeEffect);
+                    board1.draw(basicEffect);
                     selectedMenu.draw(_fontInterpreter, player1Camera.position, 1f);
                     break;
 
@@ -960,7 +949,7 @@ namespace ThreeDTetris
                     basicEffect.FogEnd = 140f;
 
                     basicEffect.FogEnabled = true;
-                    board1.draw(basicEffect, _cubeEffect);
+                    board1.draw(basicEffect);
                     _continueMenu.draw(_fontInterpreter, player1Camera.position, 1f);
 
                     break;
@@ -976,7 +965,7 @@ namespace ThreeDTetris
                     {
                         _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
-                    board1.draw(basicEffect, _cubeEffect);
+                    board1.draw(basicEffect);
                     _fontInterpreter.drawStringInWorld("score:", new Vector3(board1.width + 1f, _graphics.PreferredBackBufferHeight/40 - 14, board1.depth / 2f), 660, 0.05f, new Vector3(0, 0, 0), Vector3.One);
                     _fontInterpreter.drawStringInWorld(board1.score.ToString(), new Vector3(board1.width + 1f, _graphics.PreferredBackBufferHeight/40 - 16, board1.depth / 2f), 10, 0.05f, new Vector3(0, 0, 0), Vector3.One);
                     break;
