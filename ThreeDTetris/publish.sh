@@ -1,4 +1,4 @@
-# sh publish.sh -i icon1.png -b converted_image.png -g ./ 
+# sudo sh publish.sh -i icon1.png -b converted_image.png -g ./ 
 #!/bin/bash
 
 # Correct dimensions for banner

@@ -414,7 +414,6 @@ namespace ThreeDTetris
 
             //Content to load your game content here:
             _font = Content.Load<SpriteFont>("upHeaval");
-            cubeModel = Content.Load<Model>("Cube");
 
             _cubeEffect = Content.Load<Effect>("cubeEffect");
 
