@@ -264,8 +264,9 @@ namespace TextRenderer
                     * Matrix.CreateTranslation(new Vector3((x * textwidth * scale) - (xOffset * scale), y * textheight * scale, 0))
                     * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, characterHeight / 2f * scale, 0))
                     * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+                    * Matrix.CreateTranslation(position)
                     * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
-                    * Matrix.CreateTranslation(position);
+                    ;
 
                 letters[chars[i]].draw(_graphicsDevice, this.effect);
 

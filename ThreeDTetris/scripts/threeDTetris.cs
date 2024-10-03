@@ -23,6 +23,7 @@ using SimpleAnimation;
 using TextRenderer;
 using input;
 using System.Collections;
+using System.Xml.Linq;
 
 // MAKE SURE YOU RENAME ALL PROJECT FILES FROM DevcadeGame TO YOUR YOUR GAME NAME
 namespace ThreeDTetris
@@ -34,7 +35,6 @@ namespace ThreeDTetris
         private SpriteBatch _spriteBatch;
         //effects
         private Effect _cubeEffect;
-        private Effect _bloomEffect;
 
 
         private SpriteFont _font;
@@ -86,6 +86,9 @@ namespace ThreeDTetris
             moveCameraLeft,
             moveCameraRight,
 
+            moveCameraIn,
+            moveCameraOut,
+
             //piece actions
             translatePieceLeft,
             translatePieceRight,
@@ -118,58 +121,58 @@ namespace ThreeDTetris
             {(int)gameActions.moveCameraDown, "move camera down"},
             {(int)gameActions.moveCameraLeft, "move camera left"},
             {(int)gameActions.moveCameraRight, "move camera right"},
-            
+            {(int)gameActions.moveCameraIn, "move camera in"},
+            {(int)gameActions.moveCameraOut, "move camera out"},
             {(int)gameActions.translatePieceLeft, "translate piece left"},
             {(int)gameActions.translatePieceRight, "translate piece right"},
             {(int)gameActions.translatePieceForward, "translate piece away from camera"},
             {(int)gameActions.translatePieceBackward, "translate piece towards camera"},
-            
             {(int)gameActions.rotatePieceClockwise, "rotate piece clockwise"},
             {(int)gameActions.rotatePieceCounterClockwise, "rotate piece counterclockwise"},
             {(int)gameActions.rotatePieceAwayFromCamera, "rotate piece away from camera"},
             {(int)gameActions.rotatePieceTowardsCamera, "rotate piece towards from camera"},
-            
             {(int)gameActions.movePieceDownFaster, "move piece down faster"},
             {(int)gameActions.dropPieceImmediately, "drop piece immediately"},
-            
             {(int)gameActions.menuSelectionDown, "menu selection down"},
             {(int)gameActions.menuSelectionUp, "menu selection up"},
             {(int)gameActions.menuSelectionLeft, "menu selection left"},
             {(int)gameActions.menuSelectionRight, "menu selection right"},
-            
             {(int)gameActions.selectMenuSelection, "select menu selection"},
-
             {(int)gameActions.pause, "pause game"},
         };
 
-        private static Dictionary<string, inputKey> defaultGameKeys = new Dictionary<string, inputKey>
+        private static Dictionary<int, inputKey> defaultGameKeys = new Dictionary<int, inputKey>
         {
             //(int  , Input.ArcadeButtons )
-            {"move camera up", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.W})},
-            {"move camera down", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.S})},
-            {"move camera left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.A})},
-            {"move camera right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.D})},
+            {(int)gameActions.moveCameraUp, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.W})},
+            {(int)gameActions.moveCameraDown, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.S})},
+            {(int)gameActions.moveCameraLeft, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.A})},
+            {(int)gameActions.moveCameraRight, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.D})},
+
+            {(int)gameActions.moveCameraIn, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B3 )}, new Keys?[]{Keys.Q})},
+            {(int)gameActions.moveCameraOut, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B4 )}, new Keys?[]{Keys.E})},
+
+            {(int)gameActions.translatePieceLeft, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Left})},
+            {(int)gameActions.translatePieceRight, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Right})},
+            {(int)gameActions.translatePieceForward, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Up})},
+            {(int)gameActions.translatePieceBackward, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Down})},
             
-            {"translate piece left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Left})},
-            {"translate piece right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Right})},
-            {"translate piece away from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Up})},
-            {"translate piece towards camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A2 )}, new Keys?[]{Keys.Down})},
+            {(int)gameActions.rotatePieceClockwise, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.L})},
+            {(int)gameActions.rotatePieceCounterClockwise, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.J})},
+            {(int)gameActions.rotatePieceAwayFromCamera, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.I})},
+            {(int)gameActions.rotatePieceTowardsCamera, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.K})},
             
-            {"rotate piece clockwise", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.L})},
-            {"rotate piece counterclockwise", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.J})},
-            {"rotate piece away from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.I})},
-            {"rotate piece towards from camera", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown ), ( 1 , Input.ArcadeButtons.A3 )}, new Keys?[]{Keys.K})},
+            {(int)gameActions.movePieceDownFaster, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B1 )}, new Keys?[]{Keys.Space})},
+            {(int)gameActions.dropPieceImmediately, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B2 )}, new Keys?[]{Keys.M})},
             
-            {"move piece down faster", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B1 )}, new Keys?[]{Keys.Space})},
-            {"drop piece immediately", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.B2 )}, new Keys?[]{Keys.M})},
+            {(int)gameActions.menuSelectionDown, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown )}, new Keys?[]{Keys.Down})},
+            {(int)gameActions.menuSelectionUp, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp )}, new Keys?[]{Keys.Up})},
+            {(int)gameActions.menuSelectionLeft, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft )}, new Keys?[]{Keys.Left})},
+            {(int)gameActions.menuSelectionRight, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight )}, new Keys?[]{Keys.Right})},
             
-            {"menu selection down", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickDown )}, new Keys?[]{Keys.Down})},
-            {"menu selection up", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickUp )}, new Keys?[]{Keys.Up})},
-            {"menu selection left", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickLeft )}, new Keys?[]{Keys.Left})},
-            {"menu selection right", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.StickRight )}, new Keys?[]{Keys.Right})},
+            {(int)gameActions.selectMenuSelection, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.Enter})},
             
-            {"select menu selection", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.A1 )}, new Keys?[]{Keys.Enter})},
-            {"pause game", new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.Menu )}, new Keys?[]{Keys.P})},
+            {(int)gameActions.pause, new inputKey(new (int? playerNum, Input.ArcadeButtons? key)[] {( 1 , Input.ArcadeButtons.Menu )}, new Keys?[]{Keys.P})},
         };
 
         private static InputHandler inputHandler = new InputHandler(defaultGameKeys, actionToInputString);
@@ -414,7 +417,6 @@ namespace ThreeDTetris
             cubeModel = Content.Load<Model>("Cube");
 
             _cubeEffect = Content.Load<Effect>("cubeEffect");
-            _bloomEffect = Content.Load<Effect>("BloomCrossPlatform");
 
             /// <summary>
             /// this is the menu structure; 
@@ -747,6 +749,25 @@ namespace ThreeDTetris
                         {
                             player1Camera.move(0, -player1Camera.speed * secondsAfterLastFrame);
                         }
+
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraOut))
+                        {
+                            player1Camera.distanceFromMiddle += player1Camera.speed * 20f * secondsAfterLastFrame;
+                            if(player1Camera.distanceFromMiddle > player1Camera._finalDistanceFromMiddle * 10f)
+                            {
+                                player1Camera.distanceFromMiddle = player1Camera._finalDistanceFromMiddle * 10f;
+                            }
+                        }
+                        if (inputHandler.isKeyDown((int)gameActions.moveCameraIn))
+                        {
+                            player1Camera.distanceFromMiddle -= player1Camera.speed * 20f * secondsAfterLastFrame;
+
+                            if(player1Camera.distanceFromMiddle < 3f)
+                            {
+                                player1Camera.distanceFromMiddle = 3f;
+                            }
+                        }
+
                         if (inputHandler.runOnKeyDown((int)gameActions.moveCameraRight) && camera1Animation == null)
                         {
                             camera1Animation = new AnimationFloat(0, -MathHelper.PiOver2, 0);
@@ -889,6 +910,7 @@ namespace ThreeDTetris
         {
             GraphicsDevice.Clear(backgroundColor);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
             // Batches all the draw calls for this frame, and then performs them all at once
             _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             // TODO: Add your drawing code here
@@ -956,7 +978,8 @@ namespace ThreeDTetris
                         _fontInterpreter.drawStringRelativeToCamera(((int)board1.startText).ToString(), new Vector2(0, 2f), 6, 100, 1f/2f, new Vector3(MathF.PI - (2 * MathF.PI * board1.startTextScale),0,0), board1.startTextColor);
                     }
                     board1.draw(basicEffect, _cubeEffect);
-                    _fontInterpreter.drawStringRelativeToCamera("score: " + board1.score.ToString(), new Vector2(_graphics.PreferredBackBufferWidth/200, 8), 660, 1000, scale: 0.05f, Vector3.Zero, Vector3.One);
+                    _fontInterpreter.drawStringInWorld("score:", new Vector3(board1.width + 1f, _graphics.PreferredBackBufferHeight/40 - 14, board1.depth / 2f), 660, 0.05f, new Vector3(0, 0, 0), Vector3.One);
+                    _fontInterpreter.drawStringInWorld(board1.score.ToString(), new Vector3(board1.width + 1f, _graphics.PreferredBackBufferHeight/40 - 16, board1.depth / 2f), 10, 0.05f, new Vector3(0, 0, 0), Vector3.One);
                     break;
 
 
@@ -970,7 +993,7 @@ namespace ThreeDTetris
             //_spriteBatch.Draw(_font.Texture, Vector2.Zero, Color.White);                                              //draw font texture
             //_fontInterpreter.drawString("hello_world", Vector2.Zero, 660, 1000, 1, Vector3.Zero, Vector3.One);        //test _fontinterpreter
 
-            _spriteBatch.DrawString(_font, "FPS: " + 1 / (float)gameTime.ElapsedGameTime.TotalSeconds, new Vector2(100, 100), Color.White);
+            //_spriteBatch.DrawString(_font, "FPS: " + 1 / (float)gameTime.ElapsedGameTime.TotalSeconds, new Vector2(100, 100), Color.White);            //draw fps
 
             _spriteBatch.End();
 

@@ -22,10 +22,10 @@ namespace input
     public class InputHandler
     {
         //managing input required to play game:
-        private Dictionary<string, inputKey> gameKeys;
+        private Dictionary<int, inputKey> gameKeys;
         Dictionary<int, string> actionToKeyString;
 
-        public InputHandler(Dictionary<string, inputKey> gameKeys, Dictionary<int, string> actionToKeyString)
+        public InputHandler(Dictionary<int, inputKey> gameKeys, Dictionary<int, string> actionToKeyString)
         {
             this.gameKeys = gameKeys;
             this.actionToKeyString = actionToKeyString;
@@ -36,7 +36,7 @@ namespace input
         //returns true only on the first time a key is down
         public bool runOnKeyDown(int key)
         {
-            inputKey inputKey = gameKeys[actionToKeyString[key]];
+            inputKey inputKey = gameKeys[key];
 
             bool DevcadeBool = true;
             foreach((int playerNum, Devcade.Input.ArcadeButtons? key) button in inputKey.devcadeKeys)
@@ -84,7 +84,7 @@ namespace input
         }
         public bool isKeyDown(int key)
         {
-            inputKey inputKey = gameKeys[actionToKeyString[key]];
+            inputKey inputKey = gameKeys[key];
             
             bool DevcadeBool = true;
             foreach((int playerNum, Devcade.Input.ArcadeButtons key) button in inputKey.devcadeKeys)

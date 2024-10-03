@@ -7,8 +7,6 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-#include "BloomCrossPlatform.fx"
-
 float4x4 WorldMatrix;
 float4x4 ViewMatrix;
 float4x4 ProjectionMatrix;
