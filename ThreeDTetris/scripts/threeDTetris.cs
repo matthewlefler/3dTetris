@@ -68,11 +68,6 @@ namespace ThreeDTetris
 
         private static FontInterpreter _fontInterpreter;
 
-        private void setUpCamera()
-        {
-            Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
-        }
-
 
         //input handler
         private enum gameActions
@@ -288,24 +283,6 @@ namespace ThreeDTetris
         static piecePrefab SPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), SCubes, Color.Lime, mainKickOffsets);
         static piecePrefab TPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), TCubes, Color.Magenta, mainKickOffsets);
         static piecePrefab ZPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), ZCubes, Color.Crimson, mainKickOffsets);
-
-        //used in testing only
-        private static void DrawModel(Model model, Matrix world, Matrix view, Matrix projection, Color color)
-        {
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EmissiveColor = new Vector3(color.R, color.G, color.B);
-                    effect.EnableDefaultLighting();
-                    effect.World = world;
-                    effect.View = view;
-                    effect.Projection = projection;
-                }
-
-                mesh.Draw();
-            }
-        }
 
         static float newPieceTime;
         static float newPieceTimeCounter;
