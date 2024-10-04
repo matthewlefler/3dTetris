@@ -70,6 +70,11 @@
 /processorParam:TextureFormat=Color
 /build:upHeaval.spritefont
 
+#begin upheavtt.ttf
+/importer:
+/processor:
+/build:upheavtt.ttf
+
 #begin UVTexture.png
 /importer:TextureImporter
 /processor:TextureProcessor
