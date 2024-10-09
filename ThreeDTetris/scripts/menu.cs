@@ -2,11 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+
+//custom text rendering class
 using TextRenderer;
 
 namespace MenuClass
@@ -58,7 +55,7 @@ namespace MenuClass
         }
 
         //draws the text in MainMenuItems verticaly
-        public void draw(FontInterpreter fontInterpreter, Vector3 position, float scale)
+        public virtual void draw(FontInterpreter fontInterpreter, Vector3 position, float scale)
         {
             string selectedCharacters = ">";
             int highestItemLength = 0;
@@ -133,6 +130,41 @@ namespace MenuClass
             }
         }
     }
+
+
+    public class ControlMenu : Menu
+    {
+        int charactersPerLine;
+
+        public ControlMenu(GraphicsDevice graphicsDevice, Rectangle windowSize, int charactersPerLine) : base(graphicsDevice, windowSize)
+        {
+            this.charactersPerLine = charactersPerLine;
+        }
+
+        public override void draw(FontInterpreter fontInterpreter, Vector3 position, float scale)
+        {
+            string selectedCharacters = ">";
+            int highestItemLength = charactersPerLine;
+
+            int yDelta = -24;
+            int yPosition = 200;
+
+            for (int i = 0; i < MenuItems.Count; i++)
+            {
+                if (i == selectedOption)
+                {
+                    fontInterpreter.menuDrawStringInWorld(selectedCharacters + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale, Vector3.Zero, Vector3.One, highestItemLength);
+                }
+                else
+                {
+                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale,  Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f), highestItemLength);
+                }
+
+                yPosition += yDelta * ((int)MathF.Floor(MenuItems[i].Length / charactersPerLine) + 2);
+            }
+        }
+    }
+
 
     public class Integer
     {

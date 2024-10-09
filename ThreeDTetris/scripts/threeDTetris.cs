@@ -22,8 +22,6 @@ using BoardClass;
 using SimpleAnimation;
 using TextRenderer;
 using input;
-using System.Collections;
-using System.Xml.Linq;
 
 // MAKE SURE YOU RENAME ALL PROJECT FILES FROM DevcadeGame TO YOUR YOUR GAME NAME
 namespace ThreeDTetris
@@ -173,6 +171,8 @@ namespace ThreeDTetris
         //all 3d models are to be imported in the .fbx format
 
         //piece cube lists
+#region pieces
+
         static List<Vector3> cube2by2by2Cubes = new List<Vector3>()
         {
             new Vector3(0, 0, 0),
@@ -283,6 +283,8 @@ namespace ThreeDTetris
         static piecePrefab SPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), SCubes, Color.Lime, mainKickOffsets);
         static piecePrefab TPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), TCubes, Color.Magenta, mainKickOffsets);
         static piecePrefab ZPiece = new piecePrefab(new Vector3(1.5f, 0.5f, 0.5f), ZCubes, Color.Crimson, mainKickOffsets);
+
+#endregion
 
         static float newPieceTime;
         static float newPieceTimeCounter;
@@ -404,6 +406,9 @@ namespace ThreeDTetris
 
             Menu boardSizeMenu = new Menu(_graphics.GraphicsDevice, windowSize);
 
+            Menu controls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 20);
+
+
             int getBoardWidth()
             {
                 return board1.width;
@@ -453,18 +458,28 @@ namespace ThreeDTetris
             settingsMenu.add("Board Size", boardSizeMenu, (int)gameStates.Menu);
             settingsMenu.add("Back", _mainMenu, (int)gameStates.Menu);
 
+            controls.add("use the Player 1 joystick while pressing A1 to move the camera", controls, (int)gameStates.Menu);
+            controls.add("use the Player 1 joystick while pressing A2 to translate the piece", controls, (int)gameStates.Menu);
+            controls.add("use the Player 1 joystick while pressing A3 to rotate the piece", controls, (int)gameStates.Menu);
+            controls.add("Back", _mainMenu, (int)gameStates.Menu);
+
             playMenu.add("Solo Custom", playMenu, (int)gameStates.Play, (int)gameModes.SoloCustom);
             playMenu.add("Solo Standard", playMenu, (int)gameStates.Play, (int)gameModes.SoloStandard);
             playMenu.add("Solo 3D", playMenu, (int)gameStates.Play, (int)gameModes.SoloThreeD);
             playMenu.add("Back", _mainMenu, (int)gameStates.Menu);
 
             _mainMenu.add("Play", playMenu, (int)gameStates.Menu);
+            _mainMenu.add("Controls", controls, (int)gameStates.Menu);
             _mainMenu.add("Settings", settingsMenu, (int)gameStates.Menu);
             _mainMenu.add("Quit", settingsMenu, (int)gameStates.Quit);
 
+            #region pauseMenu
             //pause menu            
             Menu pauseBoardSizeMenu = new Menu(_graphics.GraphicsDevice, windowSize);
+
             Menu pauseSettingsMenu = new Menu(_graphics.GraphicsDevice, windowSize);
+            
+            Menu pauseControls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 20);
 
             IntValueMenu pauseBoardWidth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardWidthValue, 2, pauseSettingsMenu);
             IntValueMenu pauseBoardHeight = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardHeightValue, 1, pauseSettingsMenu);
@@ -480,7 +495,10 @@ namespace ThreeDTetris
             
             _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
             _pauseMenu.add("Settings", pauseSettingsMenu, (int)gameStates.Pause);
+            _pauseMenu.add("Controls", pauseControls, (int)gameStates.Pause);
             _pauseMenu.add("Main Menu", _mainMenu, (int)gameStates.Menu);
+            #endregion
+
             
             _continueMenu.add("Restart?", _continueMenu, (int)gameStates.Play);
             _continueMenu.add("Main Menu?", _mainMenu, (int)gameStates.Menu);

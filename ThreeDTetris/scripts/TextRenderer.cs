@@ -312,7 +312,7 @@ namespace TextRenderer
 
             for (int i = 0; i < chars.Length; i++)
             {
-                if (x >= charactersPerLine)
+                if (checkIfWordGoesOverLimit(text, i, charactersPerLine, x))
                 {
                     x = 0;
                     y -= 1;
@@ -334,6 +334,22 @@ namespace TextRenderer
 
                 x++;
             }
+        }
+
+        private bool checkIfWordGoesOverLimit(string text, int index, int length, int currentXValue)
+        {
+            int counter = 0;
+            while(text[index + counter] != ' ' && index + counter < text.Length - 1)
+            {
+                if(currentXValue + counter > length)
+                {
+                    return true;
+                }
+
+                counter++;
+            }
+
+            return false;
         }
     }
 
