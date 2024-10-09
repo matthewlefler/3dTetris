@@ -492,6 +492,10 @@ namespace ThreeDTetris
 
             pauseSettingsMenu.add("Board Size", pauseBoardSizeMenu, (int)gameStates.Pause);
             pauseSettingsMenu.add("Back", _pauseMenu, (int)gameStates.Pause);
+
+            pauseControls.add("use the Player 1 joystick while pressing A1 to move the camera", pauseControls, (int)gameStates.Pause);
+            pauseControls.add("use the Player 1 joystick while pressing A2 to translate the piece", pauseControls, (int)gameStates.Pause);
+            pauseControls.add("use the Player 1 joystick while pressing A3 to rotate the piece", pauseControls, (int)gameStates.Pause);
             
             _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
             _pauseMenu.add("Settings", pauseSettingsMenu, (int)gameStates.Pause);
