@@ -324,6 +324,17 @@ namespace BoardClass
                         }
                     }
                 }
+
+                foreach(Piece piece in pieceList)
+                {
+                    for (int i = 0; i < piece.cubes.Count; i++)
+                    {
+                        if (piece.cubes[i].position.Y > y)
+                        {
+                            piece.cubes[i].position.Y -= 1f;
+                        }
+                    }
+                }
             }
         }
 
