@@ -305,7 +305,6 @@ namespace ThreeDTetris
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Debug.WriteLine(Content.RootDirectory);
             IsMouseVisible = false;
         }
 
