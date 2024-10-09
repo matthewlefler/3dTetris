@@ -506,12 +506,12 @@ namespace ThreeDTetris
             {
                 pauseControls.add(item, pauseControls, (int)gameStates.Pause);
             }
-            pauseControls.add("Back", _mainMenu, (int)gameStates.Menu);
+            pauseControls.add("Back", _pauseMenu, (int)gameStates.Pause);
 
             _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
             _pauseMenu.add("Settings", pauseSettingsMenu, (int)gameStates.Pause);
             _pauseMenu.add("Controls", pauseControls, (int)gameStates.Pause);
-            _pauseMenu.add("Main Menu", _mainMenu, (int)gameStates.Menu);
+            _pauseMenu.add("Quit", _mainMenu, (int)gameStates.Menu);
             #endregion
 
             
@@ -607,11 +607,27 @@ namespace ThreeDTetris
                         if(states.Length == 1)
                         {
                             gameState = (gameStates)states[0]; //cast from int back to gamestate
+
+                            //reset board
+                            if(gameState == gameStates.Menu)
+                            {
+                                board1.zoomInAnimation = true;
+                                board1.reset();
+                                player1Camera.distanceAnimation = null;
+                            }
                         }
                         else if(states.Length == 2) 
                         {
                             gameState = (gameStates)states[0]; //cast from int back to gamestate
                             gameMode = (gameModes)states[1];
+
+                            //reset board
+                            if(gameState == gameStates.Menu)
+                            {
+                                board1.zoomInAnimation = true;
+                                board1.reset();
+                                player1Camera.distanceAnimation = null;
+                            }
                         }
 
                     }
