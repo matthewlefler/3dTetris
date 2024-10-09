@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+
 
 //custom text rendering class
 using TextRenderer;
@@ -47,6 +49,8 @@ namespace MenuClass
         internal Dictionary<string, Menu> menuItemsToStates = new Dictionary<string, Menu>();
         internal Dictionary<string, int[]> menuItemstoGameStates = new Dictionary<string, int[]>();
 
+        internal Dictionary<string, int> numberOfLinesPerItem = new Dictionary<string, int>();
+
         public Menu(GraphicsDevice graphicsDevice, Rectangle windowSize)
         {
             selectedOption = 0;
@@ -89,7 +93,7 @@ namespace MenuClass
             menuItemstoGameStates.Add(name, states);
         }
 
-        public void add(string name, Menu menu, int state) //cast to int
+        public virtual void add(string name, Menu menu, int state) //cast to int
         {
             MenuItems.Add(name);
             menuItemsToStates.Add(name, menu);
@@ -143,26 +147,68 @@ namespace MenuClass
 
         public override void draw(FontInterpreter fontInterpreter, Vector3 position, float scale)
         {
-            string selectedCharacters = ">";
+            string selectedItemPrefix = ">";
             int highestItemLength = charactersPerLine;
 
             int yDelta = -24;
-            int yPosition = 200;
+            float yPosition = 200;
+
+            for(int i = 0; i < selectedOption; i++)
+            {
+                int x = 0;
+
+                string text = MenuItems[i];
+                char[] chars = text.ToCharArray();
+
+                yPosition -= yDelta;
+
+                for (int j = 0; j < chars.Length; j++)
+                {
+                    if (fontInterpreter.checkIfWordGoesOverLimit(MenuItems[i], j, charactersPerLine, x))
+                    {
+                        yPosition -= yDelta;
+                        x = 0;
+                    }
+
+                    x++;
+                }
+            }
 
             for (int i = 0; i < MenuItems.Count; i++)
             {
+                Vector3 color = Vector3.One;
+
+                if(i % 2 == 0)
+                {
+                    color = new Vector3(1f, 0.8f, 0.5f);
+                }
+
                 if (i == selectedOption)
                 {
-                    fontInterpreter.menuDrawStringInWorld(selectedCharacters + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale, Vector3.Zero, Vector3.One, highestItemLength);
+                    fontInterpreter.menuDrawStringInWorld(selectedItemPrefix + MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale, Vector3.Zero, color, highestItemLength);
                 }
                 else
                 {
-                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale,  Vector3.Zero, new Vector3(0.4f, 0.4f, 0.4f), highestItemLength);
+                    fontInterpreter.menuDrawStringInWorld(MenuItems[i], new Vector3(position.X, yPosition + position.Y, position.Z), charactersPerLine, scale,  Vector3.Zero, color * 0.6f, highestItemLength);
                 }
 
-                yPosition += yDelta * ((int)MathF.Floor(MenuItems[i].Length / charactersPerLine) + 2);
+                int x = 0;
+                for (int j = 0; j < MenuItems[i].ToCharArray().Length; j++)
+                {
+                    if (fontInterpreter.checkIfWordGoesOverLimit(MenuItems[i], j, charactersPerLine, x))
+                    {
+                        yPosition += yDelta;
+                        x = 0;
+                    }
+
+                    x++;
+                }
+
+                yPosition += yDelta;
             }
         }
+
+        
     }
 
 

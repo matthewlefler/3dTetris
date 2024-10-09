@@ -17,6 +17,46 @@ namespace input
         }
 
         #nullable disable
+
+        public string devcadeToString()
+        {
+            string stringToReturn = "";
+
+            int i = 0;
+            foreach((int? playerNum, Devcade.Input.ArcadeButtons? key) value in devcadeKeys)
+            {
+                stringToReturn += value.key.ToString();
+
+                i++;
+
+                if(devcadeKeys.Length > 1 && i < devcadeKeys.Length)
+                {
+                    stringToReturn += " + ";
+                }
+            }
+
+            return stringToReturn + "`"; 
+        }
+
+        public string keyboardToString()
+        {
+            string stringToReturn = "";
+
+            int i = 0;
+            foreach(Keys? value in keyboardKeys)
+            {
+                stringToReturn += "Key: " + value.ToString();
+
+                i++;
+                
+                if(devcadeKeys.Length > 1 && i < keyboardKeys.Length)
+                {
+                    stringToReturn += " + ";
+                }
+            }
+
+            return stringToReturn + "`";
+        }
     }
 
     public class InputHandler

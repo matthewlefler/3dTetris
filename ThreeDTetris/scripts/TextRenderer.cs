@@ -64,6 +64,8 @@ namespace TextRenderer
     {
         private List<char> charList = new List<char>();
 
+        private int textwidth = 28;
+
         private SpriteFont font;
         private Texture2D fontTexture;
         private Dictionary<char, SpriteFont.Glyph> glyphs;
@@ -156,7 +158,6 @@ namespace TextRenderer
 
             float xOffset = 0f;
 
-            int textwidth = 26;
             int textheight = 24;
 
             if(chars.Length == 1)
@@ -218,7 +219,6 @@ namespace TextRenderer
 
             float xOffset = 0f;
 
-            int textwidth = 26;
             int textheight = 24;
 
             if (chars.Length == 1)
@@ -281,7 +281,6 @@ namespace TextRenderer
 
             float xOffset = 0f;
 
-            int textWidthSpacing = 26;
             int textHeightSpacing = 24;
 
             if (chars.Length == 1)
@@ -296,12 +295,12 @@ namespace TextRenderer
             {
                 if (chars.Length <= charactersPerLine)
                 {
-                    xOffset = chars.Length * textWidthSpacing / 2f;
+                    xOffset = chars.Length * textwidth / 2f;
                 }
             }
             if (chars.Length > charactersPerLine)
             {
-                xOffset = charactersPerLine * textWidthSpacing / 2f;
+                xOffset = charactersPerLine * textwidth / 2f;
             }
 
 
@@ -324,21 +323,32 @@ namespace TextRenderer
                 this.effect.World = 
                     Matrix.CreateTranslation(new Vector3(-characterWidth / 2f, -characterHeight / 2f, 0))
                     * Matrix.CreateScale(scale)
-                    * Matrix.CreateTranslation(new Vector3((x * textWidthSpacing * scale) - (xOffset * scale), y * textHeightSpacing * scale, 0))
+                    * Matrix.CreateTranslation(new Vector3((x * textwidth * scale) - (xOffset * scale), y * textHeightSpacing * scale, 0))
                     * Matrix.CreateTranslation(new Vector3(characterWidth / 2f * scale, characterHeight / 2f * scale, 0))
                     * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
                     * Matrix.CreateFromYawPitchRoll(MathF.PI / 2f - camera.orbitRotations.X, 2f * MathF.PI - camera.orbitRotations.Y, 0f)
                     * Matrix.CreateTranslation((scale * position) - (scale * longestText * 80f * Vector3.Normalize(camera.position)));
-
+                
+                if(chars[i] == '`')
+                {
+                    continue;
+                }
+                
                 letters[chars[i]].draw(_graphicsDevice, this.effect);
 
                 x++;
             }
         }
 
-        private bool checkIfWordGoesOverLimit(string text, int index, int length, int currentXValue)
+        public bool checkIfWordGoesOverLimit(string text, int index, int length, int currentXValue)
         {
             int counter = 0;
+
+            if(text[index] == '`')
+            {
+                return true;
+            }
+
             while(text[index + counter] != ' ' && index + counter < text.Length - 1)
             {
                 if(currentXValue + counter > length)

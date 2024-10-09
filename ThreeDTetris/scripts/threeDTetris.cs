@@ -406,7 +406,7 @@ namespace ThreeDTetris
 
             Menu boardSizeMenu = new Menu(_graphics.GraphicsDevice, windowSize);
 
-            Menu controls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 20);
+            Menu controls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 22);
 
 
             int getBoardWidth()
@@ -458,9 +458,18 @@ namespace ThreeDTetris
             settingsMenu.add("Board Size", boardSizeMenu, (int)gameStates.Menu);
             settingsMenu.add("Back", _mainMenu, (int)gameStates.Menu);
 
-            controls.add("use the Player 1 joystick while pressing A1 to move the camera", controls, (int)gameStates.Menu);
-            controls.add("use the Player 1 joystick while pressing A2 to translate the piece", controls, (int)gameStates.Menu);
-            controls.add("use the Player 1 joystick while pressing A3 to rotate the piece", controls, (int)gameStates.Menu);
+            List<string> controlsItems = new List<string>();
+
+            foreach(var action in defaultGameKeys)
+            {
+                controlsItems.Add(actionToInputString[action.Key]);
+                controlsItems.Add(action.Value.devcadeToString());
+            }   
+
+            foreach(string item in controlsItems)
+            {
+                controls.add(item, controls, (int)gameStates.Menu);
+            }
             controls.add("Back", _mainMenu, (int)gameStates.Menu);
 
             playMenu.add("Solo Custom", playMenu, (int)gameStates.Play, (int)gameModes.SoloCustom);
@@ -479,7 +488,7 @@ namespace ThreeDTetris
 
             Menu pauseSettingsMenu = new Menu(_graphics.GraphicsDevice, windowSize);
             
-            Menu pauseControls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 20);
+            Menu pauseControls = new ControlMenu(_graphics.GraphicsDevice, windowSize, 22);
 
             IntValueMenu pauseBoardWidth = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardWidthValue, 2, pauseSettingsMenu);
             IntValueMenu pauseBoardHeight = new IntValueMenu(_graphics.GraphicsDevice, windowSize, boardHeightValue, 1, pauseSettingsMenu);
@@ -493,10 +502,12 @@ namespace ThreeDTetris
             pauseSettingsMenu.add("Board Size", pauseBoardSizeMenu, (int)gameStates.Pause);
             pauseSettingsMenu.add("Back", _pauseMenu, (int)gameStates.Pause);
 
-            pauseControls.add("use the Player 1 joystick while pressing A1 to move the camera", pauseControls, (int)gameStates.Pause);
-            pauseControls.add("use the Player 1 joystick while pressing A2 to translate the piece", pauseControls, (int)gameStates.Pause);
-            pauseControls.add("use the Player 1 joystick while pressing A3 to rotate the piece", pauseControls, (int)gameStates.Pause);
-            
+            foreach(string item in controlsItems)
+            {
+                pauseControls.add(item, pauseControls, (int)gameStates.Pause);
+            }
+            pauseControls.add("Back", _mainMenu, (int)gameStates.Menu);
+
             _pauseMenu.add("Resume", _pauseMenu, (int)gameStates.Play);
             _pauseMenu.add("Settings", pauseSettingsMenu, (int)gameStates.Pause);
             _pauseMenu.add("Controls", pauseControls, (int)gameStates.Pause);
